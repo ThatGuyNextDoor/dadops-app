@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { supabase } from "./supabaseClient";
 import { useLiveTable } from "./useLiveTable";
 
@@ -23,6 +23,7 @@ const C = {
 };
 
 const GO_DAY = new Date("2026-06-26T08:00:00");
+const TABLET_PASS = "dadops-tablet-2026";
 
 const fonts = {
   display: "'Bebas Neue', sans-serif",
@@ -35,6 +36,7 @@ const PEOPLE = [
   { id: "matt", name: "Matt", role: "Dad", color: "#00D26E" },
   { id: "jhomaira", name: "Jhomaira", role: "Mum", color: "#3aa0ff" },
   { id: "omaira", name: "Omaira", role: "Helper", color: "#c084fc" },
+  { id: "tablet", name: "Tablet", role: "Dashboard", color: "#6b8a76" },
 ];
 
 // ---- Inject fonts + global resets ----
@@ -53,6 +55,7 @@ function useGlobalStyle() {
       @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
       @keyframes slideIn { from { transform: translateY(100%);} to {transform:none;} }
       @keyframes scaleIn { from { opacity:0; transform: scale(0.96);} to {opacity:1; transform:none;} }
+      @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
     `;
     document.head.appendChild(style);
   }, []);
@@ -91,12 +94,145 @@ function useIsTablet() {
 export default function DadOps() {
   useGlobalStyle();
   const isTablet = useIsTablet();
+  const [session, setSession] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    if (!supabase) { setAuthLoading(false); return; }
+
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (data.session) {
+        setSession(data.session);
+        setAuthLoading(false);
+      } else if (isTablet) {
+        const { data: d } = await supabase.auth.signInWithPassword({
+          email: "tablet@dadops.local",
+          password: TABLET_PASS,
+        });
+        setSession(d?.session ?? null);
+        setAuthLoading(false);
+      } else {
+        setAuthLoading(false);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, sess) => {
+      setSession(sess);
+    });
+    return () => subscription.unsubscribe();
+  }, [isTablet]);
+
+  if (authLoading) return <AuthLoading />;
+  if (!session) return <LoginScreen />;
+  return <AuthenticatedApp session={session} isTablet={isTablet} />;
+}
+
+function AuthLoading() {
+  return (
+    <div style={{ background: C.bg, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
+      <div style={{ fontFamily: fonts.display, fontSize: 38, letterSpacing: 4 }}>DAD<span style={{ color: C.accent }}>OPS</span></div>
+      <div style={{ width: 28, height: 28, border: `3px solid ${C.accentDim}`, borderTop: `3px solid ${C.accent}`, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+    </div>
+  );
+}
+
+function LoginScreen() {
+  const [selected, setSelected] = useState(null);
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const members = PEOPLE.filter((p) => p.id !== "tablet");
+
+  useEffect(() => {
+    if (pin.length !== 4 || !selected) return;
+    const t = setTimeout(async () => {
+      setSubmitting(true);
+      const { error: err } = await supabase.auth.signInWithPassword({
+        email: `${selected.id}@dadops.local`,
+        password: pin,
+      });
+      setSubmitting(false);
+      if (err) { setError("Wrong PIN — try again."); setPin(""); }
+    }, 120);
+    return () => clearTimeout(t);
+  }, [pin, selected]);
+
+  const tap = (k) => {
+    if (submitting) return;
+    if (k === "DEL") { setError(null); setPin((p) => p.slice(0, -1)); return; }
+    if (pin.length < 4) setPin((p) => p + k);
+  };
+
+  return (
+    <div style={{ background: C.bg, minHeight: "100vh", fontFamily: fonts.body, color: C.text, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 24px" }}>
+      <div style={{ fontFamily: fonts.display, fontSize: 38, letterSpacing: 4, marginBottom: 4 }}>DAD<span style={{ color: C.accent }}>OPS</span></div>
+      <div style={{ fontFamily: fonts.mono, fontSize: 10, color: C.muted, letterSpacing: 2, marginBottom: 44 }}>JACOB · BORN 26 JUN 2026</div>
+
+      {!selected ? (
+        <>
+          <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: C.muted2, marginBottom: 18 }}>WHO ARE YOU?</div>
+          {members.map((p) => (
+            <button key={p.id} onClick={() => { setSelected(p); setPin(""); setError(null); }}
+              style={{ width: "100%", maxWidth: 340, display: "flex", alignItems: "center", gap: 18, background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "18px 22px", marginBottom: 12, cursor: "pointer", color: C.text }}>
+              <div style={{ width: 44, height: 44, borderRadius: "50%", background: p.color, display: "grid", placeItems: "center", color: "#000", fontWeight: 700, fontSize: 18 }}>{p.name[0]}</div>
+              <div style={{ textAlign: "left" }}>
+                <div style={{ fontSize: 17, fontWeight: 600 }}>{p.name}</div>
+                <div style={{ fontSize: 11, color: C.muted2, fontFamily: fonts.mono, marginTop: 2 }}>{p.role.toUpperCase()}</div>
+              </div>
+            </button>
+          ))}
+        </>
+      ) : (
+        <>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", background: selected.color, display: "grid", placeItems: "center", color: "#000", fontWeight: 700, fontSize: 20 }}>{selected.name[0]}</div>
+            <div>
+              <div style={{ fontSize: 17, fontWeight: 600 }}>{selected.name}</div>
+              <button onClick={() => { setSelected(null); setPin(""); setError(null); }} style={{ background: "none", border: "none", color: C.muted2, fontSize: 11, cursor: "pointer", padding: 0, fontFamily: fonts.body }}>Not you? ←</button>
+            </div>
+          </div>
+
+          <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: C.muted2, marginBottom: 16 }}>ENTER PIN</div>
+          <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} style={{ width: 14, height: 14, borderRadius: "50%", background: pin.length > i ? selected.color : "transparent", border: `2px solid ${pin.length > i ? selected.color : C.muted}`, transition: "all 0.15s" }} />
+            ))}
+          </div>
+
+          {error && <div style={{ color: C.danger, fontSize: 12.5, marginBottom: 16, fontFamily: fonts.mono, letterSpacing: 0.5 }}>{error}</div>}
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 72px)", gap: 10, opacity: submitting ? 0.5 : 1 }}>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, "DEL"].map((k, idx) => (
+              <button key={idx} onClick={() => k !== null && tap(k === 0 ? "0" : String(k))}
+                disabled={k === null || submitting}
+                style={{
+                  height: 64, borderRadius: 14,
+                  border: k === null ? "none" : `1px solid ${C.border}`,
+                  background: k === null ? "transparent" : C.card,
+                  color: C.text, fontSize: k === "DEL" ? 18 : 22, fontWeight: 600,
+                  cursor: k === null ? "default" : "pointer", fontFamily: fonts.mono,
+                }}>
+                {k === null ? "" : k === "DEL" ? "⌫" : k}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function AuthenticatedApp({ session, isTablet }) {
   const [tab, setTab] = useState("shift");
-  const [user, setUser] = useState(PEOPLE[0]);
   const [fabOpen, setFabOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [moreScreen, setMoreScreen] = useState(null);
-  // ---- Shared, persisted state (Supabase) ----
+  const [changePinOpen, setChangePinOpen] = useState(false);
+
+  const personId = session.user.user_metadata?.person_id;
+  const user = PEOPLE.find((p) => p.id === personId) || PEOPLE[0];
+
   const feedsT = useLiveTable("feeds", {
     mapRow: (r) => ({ id: r.id, type: r.type, side: r.side, vol: r.vol_ml, at: new Date(r.at), by: r.by_person }),
   });
@@ -109,9 +245,6 @@ export default function DadOps() {
   });
   const tempsT = useLiveTable("temps", {
     mapRow: (r) => ({ id: r.id, c: Number(r.c), at: new Date(r.at), by: r.by_person }),
-  });
-  const milestonesT = useLiveTable("milestones", {
-    mapRow: (r) => ({ id: r.id, cat: r.category, title: r.title, notes: r.notes, date: r.date_label }),
   });
 
   const feeds = feedsT.rows, sleeps = sleepsT.rows, nappies = nappiesT.rows, temps = tempsT.rows;
@@ -131,7 +264,6 @@ export default function DadOps() {
   const lastTemp = temps[0];
   const tempAlert = lastTemp && lastTemp.c >= 38;
 
-  // Daily Log — private per-person, not realtime, not shown on the tablet.
   const [dailyLogs, setDailyLogs] = useState({});
   useEffect(() => {
     if (!supabase) return;
@@ -175,15 +307,14 @@ export default function DadOps() {
     });
   };
 
-  const shared = { feeds, sleeps, nappies, temps, lastTemp, tempAlert, shifts, lastFeed, lastNappy, user, addFeed, addNappy, addSleep, addTemp, setTab };
+  const onSignOut = () => supabase?.auth.signOut();
+  const shared = { feeds, sleeps, nappies, temps, feedsT, sleepsT, nappiesT, tempsT, lastTemp, tempAlert, shifts, lastFeed, lastNappy, user, addFeed, addNappy, addSleep, addTemp, setTab };
 
-  if (isTablet) {
-    return <TabletDashboard shared={shared} />;
-  }
+  if (isTablet) return <TabletDashboard shared={shared} />;
 
   return (
     <div style={{ background: C.bg, minHeight: "100vh", fontFamily: fonts.body, color: C.text, position: "relative", maxWidth: 480, margin: "0 auto", overflow: "hidden" }}>
-      <TopBar user={user} setUser={setUser} />
+      <TopBar user={user} onSignOut={onSignOut} openChangePinModal={() => setChangePinOpen(true)} />
 
       <div style={{ padding: "0 16px 120px", minHeight: "100vh" }}>
         {tab === "shift" && <Shift {...shared} />}
@@ -192,14 +323,72 @@ export default function DadOps() {
         {tab === "library" && <Library {...shared} />}
       </div>
 
-      {/* Quick-log FAB */}
       <QuickLogFab open={fabOpen} setOpen={setFabOpen} addFeed={addFeed} addNappy={addNappy} addSleep={addSleep} addTemp={addTemp} />
 
-      {/* More sheet */}
       {moreOpen && <MoreSheet close={() => setMoreOpen(false)} open={(s) => { setMoreScreen(s); setMoreOpen(false); }} />}
       {moreScreen && <MoreScreen screen={moreScreen} close={() => setMoreScreen(null)} user={user} dailyLogs={dailyLogs} addDailyLog={addDailyLog} {...shared} />}
+      {changePinOpen && <ChangePinModal user={user} close={() => setChangePinOpen(false)} />}
 
       <BottomNav tab={tab} setTab={setTab} openMore={() => setMoreOpen(true)} />
+    </div>
+  );
+}
+
+function ChangePinModal({ user, close }) {
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState(null);
+  const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const save = async () => {
+    if (!/^\d{4}$/.test(next)) { setError("New PIN must be exactly 4 digits"); return; }
+    if (next !== confirm) { setError("PINs don't match"); return; }
+    setLoading(true);
+    const { error: authErr } = await supabase.auth.signInWithPassword({
+      email: `${user.id}@dadops.local`,
+      password: current,
+    });
+    if (authErr) { setError("Current PIN is wrong"); setLoading(false); return; }
+    const { error: updErr } = await supabase.auth.updateUser({ password: next });
+    setLoading(false);
+    if (updErr) { setError(updErr.message); return; }
+    setSaved(true);
+  };
+
+  const pinField = (label, val, setter) => (
+    <div style={{ marginBottom: 14 }}>
+      <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.5, color: C.muted, marginBottom: 6 }}>{label}</div>
+      <input
+        type="password" inputMode="numeric" maxLength={4}
+        value={val}
+        onChange={(e) => setter(e.target.value.replace(/\D/g, "").slice(0, 4))}
+        style={{ width: "100%", background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "13px 14px", color: C.text, fontSize: 22, fontFamily: fonts.mono, outline: "none", letterSpacing: 10, textAlign: "center" }}
+      />
+    </div>
+  );
+
+  return (
+    <div onClick={close} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)", zIndex: 400, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: C.surface, borderRadius: 20, padding: 24, width: "88%", maxWidth: 360, border: `1px solid ${C.border}`, animation: "scaleIn 0.15s" }}>
+        <div style={{ fontFamily: fonts.display, fontSize: 22, letterSpacing: 1, marginBottom: 20 }}>CHANGE PIN</div>
+        {saved ? (
+          <>
+            <div style={{ color: C.accent, fontSize: 15, textAlign: "center", marginBottom: 20 }}>✓ PIN updated successfully</div>
+            <button onClick={close} style={bigBtn()}>Done</button>
+          </>
+        ) : (
+          <>
+            {pinField("CURRENT PIN", current, setCurrent)}
+            {pinField("NEW PIN (4 DIGITS)", next, setNext)}
+            {pinField("CONFIRM NEW PIN", confirm, setConfirm)}
+            {error && <div style={{ color: C.danger, fontSize: 12, marginBottom: 12, fontFamily: fonts.mono }}>{error}</div>}
+            <button onClick={save} disabled={loading} style={{ ...bigBtn(), opacity: loading ? 0.7 : 1 }}>{loading ? "Saving…" : "Update PIN"}</button>
+            <button onClick={close} style={{ ...bigBtn(), background: "transparent", border: `1px solid ${C.border}`, color: C.muted2, marginTop: 10 }}>Cancel</button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -335,7 +524,7 @@ function BigStat({ icon, label, value, sub }) {
 // ============================================================
 // TOP BAR
 // ============================================================
-function TopBar({ user, setUser }) {
+function TopBar({ user, onSignOut, openChangePinModal }) {
   const [open, setOpen] = useState(false);
   return (
     <div style={{ padding: "16px 16px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${C.border}`, position: "sticky", top: 0, background: C.bg, zIndex: 50 }}>
@@ -348,19 +537,22 @@ function TopBar({ user, setUser }) {
             {user.name[0]}
           </div>
           <span style={{ color: C.text, fontSize: 13, fontWeight: 500 }}>{user.name}</span>
+          <span style={{ color: C.muted, fontSize: 10, marginLeft: 2 }}>▾</span>
         </button>
         {open && (
-          <div style={{ position: "absolute", right: 0, top: 42, background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden", minWidth: 160, zIndex: 100, animation: "scaleIn 0.12s" }}>
-            {PEOPLE.map((p) => (
-              <button key={p.id} onClick={() => { setUser(p); setOpen(false); }} style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "11px 14px", background: p.id === user.id ? C.accentDim : "transparent", border: "none", cursor: "pointer", color: C.text }}>
-                <div style={{ width: 22, height: 22, borderRadius: "50%", background: p.color, display: "grid", placeItems: "center", color: "#000", fontWeight: 700, fontSize: 11 }}>{p.name[0]}</div>
-                <div style={{ textAlign: "left" }}>
-                  <div style={{ fontSize: 13, fontWeight: 500 }}>{p.name}</div>
-                  <div style={{ fontSize: 10, color: C.muted2, fontFamily: fonts.mono }}>{p.role.toUpperCase()}</div>
-                </div>
-              </button>
-            ))}
-            <div style={{ padding: "8px 14px", borderTop: `1px solid ${C.border}`, fontSize: 10, color: C.muted, fontFamily: fonts.mono }}>SWITCH VIEW (DEMO)</div>
+          <div style={{ position: "absolute", right: 0, top: 42, background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden", minWidth: 170, zIndex: 100, animation: "scaleIn 0.12s" }}>
+            <div style={{ padding: "10px 14px 6px", fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1.5, color: C.muted }}>
+              {user.role.toUpperCase()}
+            </div>
+            <button onClick={() => { openChangePinModal(); setOpen(false); }}
+              style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "transparent", border: "none", cursor: "pointer", color: C.text, fontSize: 13, fontFamily: fonts.body }}>
+              🔑 Change PIN
+            </button>
+            <div style={{ height: 1, background: C.border, margin: "4px 0" }} />
+            <button onClick={() => { onSignOut(); setOpen(false); }}
+              style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: "transparent", border: "none", cursor: "pointer", color: C.danger, fontSize: 13, fontFamily: fonts.body }}>
+              ↩ Sign out
+            </button>
           </div>
         )}
       </div>
@@ -378,14 +570,14 @@ function Label({ children }) {
 // ============================================================
 // TONIGHT
 // ============================================================
-function Shift({ shifts, lastFeed, lastNappy, user }) {
+function Shift({ shifts, lastFeed, lastNappy, user, feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT, tempsT }) {
   const [handedOff, setHandedOff] = useState(false);
   const nameOf = (id) => PEOPLE.find((p) => p.id === id)?.name || id;
   const next = shifts.find((s) => s.state === "next");
 
-  // forecast: predict next wake from last feed
-  const sinceFeed = Math.floor((now() - lastFeed.at) / 60000);
-  const predict = Math.max(0, 165 - sinceFeed);
+  // forecast: predict next wake from last feed (no data yet = no forecast)
+  const sinceFeed = lastFeed ? Math.floor((now() - lastFeed.at) / 60000) : null;
+  const predict = sinceFeed === null ? null : Math.max(0, 165 - sinceFeed);
 
   return (
     <div style={{ animation: "fadeUp 0.3s" }}>
@@ -395,7 +587,9 @@ function Shift({ shifts, lastFeed, lastNappy, user }) {
       <div style={{ background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 14, padding: 14, marginBottom: 16, display: "flex", gap: 12, alignItems: "center" }}>
         <div style={{ fontSize: 22 }}>🔮</div>
         <div style={{ fontSize: 13.5, lineHeight: 1.5 }}>
-          Jacob last fed <b>{agoStr(lastFeed.at)}</b>. Expect a wake in roughly <b style={{ color: C.accent }}>{predict > 0 ? `${predict} min` : "any time now"}</b>.
+          {lastFeed
+            ? <>Jacob last fed <b>{agoStr(lastFeed.at)}</b>. Expect a wake in roughly <b style={{ color: C.accent }}>{predict > 0 ? `${predict} min` : "any time now"}</b>.</>
+            : "No feeds logged yet — log one from the + button to start the wake forecast."}
         </div>
       </div>
 
@@ -436,9 +630,15 @@ function Shift({ shifts, lastFeed, lastNappy, user }) {
 
       <Label>Live Status</Label>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <StatTile icon="🍼" label="Last Feed" value={agoStr(lastFeed.at)} sub={lastFeed.type === "breast" ? `Breast (${lastFeed.side})` : `Bottle ${lastFeed.vol}ml`} />
-        <StatTile icon="👶" label="Last Nappy" value={agoStr(lastNappy.at)} sub={lastNappy.type.toUpperCase()} />
+        <StatTile icon="🍼" label="Last Feed" value={lastFeed ? agoStr(lastFeed.at) : "—"} sub={lastFeed ? (lastFeed.type === "breast" ? `Breast (${lastFeed.side})` : `Bottle ${lastFeed.vol}ml`) : "No feeds yet"} />
+        <StatTile icon="👶" label="Last Nappy" value={lastNappy ? agoStr(lastNappy.at) : "—"} sub={lastNappy ? lastNappy.type.toUpperCase() : "No nappies yet"} />
       </div>
+
+      <Label>Activity Log</Label>
+      <ActivityLog
+        feeds={feeds} nappies={nappies} sleeps={sleeps} temps={temps}
+        feedsT={feedsT} nappiesT={nappiesT} sleepsT={sleepsT} tempsT={tempsT}
+      />
     </div>
   );
 }
@@ -450,6 +650,197 @@ function StatTile({ icon, label, value, sub }) {
       <div style={{ fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.5, color: C.muted, marginBottom: 3 }}>{label.toUpperCase()}</div>
       <div style={{ fontSize: 16, fontWeight: 600 }}>{value}</div>
       <div style={{ fontSize: 11.5, color: C.muted2, marginTop: 2 }}>{sub}</div>
+    </div>
+  );
+}
+
+// ============================================================
+// ACTIVITY LOG — edit / soft-delete logged entries
+// ============================================================
+function ActivityLog({ feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT, tempsT }) {
+  const [editing, setEditing] = useState(null);
+
+  const nameOf = (id) => PEOPLE.find((p) => p.id === id)?.name || id;
+
+  const tableFor = (kind) => ({ feed: feedsT, nappy: nappiesT, sleep: sleepsT, temp: tempsT }[kind]);
+  const timeColFor = (kind) => (kind === "sleep" ? "start_ts" : "at");
+
+  const events = useMemo(() => [
+    ...feeds.map((f) => ({
+      id: f.id, kind: "feed", at: f.at, by: f.by,
+      icon: "🍼",
+      label: f.type === "breast" ? `Breast · ${f.side}` : `Bottle · ${f.vol}ml`,
+    })),
+    ...nappies.map((n) => ({
+      id: n.id, kind: "nappy", at: n.at, by: n.by,
+      icon: "👶",
+      label: n.type.charAt(0).toUpperCase() + n.type.slice(1),
+    })),
+    ...sleeps.map((s) => ({
+      id: s.id, kind: "sleep", at: s.start, by: s.by,
+      icon: "😴",
+      label: s.end
+        ? `Slept · ${Math.round((s.end - s.start) / 60000)}m`
+        : "Sleep in progress",
+    })),
+    ...temps.map((t) => ({
+      id: t.id, kind: "temp", at: t.at, by: t.by,
+      icon: "🌡️",
+      label: `${t.c.toFixed(1)}°C`,
+      alert: t.c >= 38,
+    })),
+  ].sort((a, b) => b.at - a.at).slice(0, 25), [feeds, nappies, sleeps, temps]);
+
+  if (events.length === 0) {
+    return (
+      <div style={{ textAlign: "center", color: C.muted2, fontSize: 13, padding: "20px 10px" }}>
+        No entries yet — use + to log a feed, nappy or sleep.
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {events.map((ev, i) => (
+        <button
+          key={ev.id}
+          onClick={() => setEditing(ev)}
+          style={{
+            width: "100%", display: "flex", alignItems: "center", gap: 12,
+            background: ev.alert ? "rgba(255,90,90,0.06)" : C.card,
+            border: `1px solid ${ev.alert ? "rgba(255,90,90,0.25)" : C.border}`,
+            borderRadius: 12, padding: "12px 14px", marginBottom: 7,
+            cursor: "pointer", color: C.text,
+            animation: `fadeUp 0.2s ${Math.min(i, 8) * 0.03}s both`,
+          }}
+        >
+          <span style={{ fontSize: 18, flexShrink: 0 }}>{ev.icon}</span>
+          <div style={{ flex: 1, textAlign: "left" }}>
+            <div style={{ fontSize: 14, fontWeight: 500 }}>{ev.label}</div>
+            <div style={{ fontSize: 11, color: C.muted2, fontFamily: fonts.mono, marginTop: 1 }}>
+              {agoStr(ev.at)} · {nameOf(ev.by)}
+            </div>
+          </div>
+          <span style={{ fontSize: 10, color: C.muted, fontFamily: fonts.mono, letterSpacing: 0.5 }}>EDIT ›</span>
+        </button>
+      ))}
+
+      {editing && (
+        <EntryEditSheet
+          entry={editing}
+          tableHook={tableFor(editing.kind)}
+          timeCol={timeColFor(editing.kind)}
+          close={() => setEditing(null)}
+        />
+      )}
+    </>
+  );
+}
+
+// ---- Entry edit / delete sheet ----
+function EntryEditSheet({ entry, tableHook, timeCol, close }) {
+  const [time, setTime] = useState(new Date(entry.at));
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const adjust = (mins) => setTime((t) => new Date(t.getTime() + mins * 60000));
+
+  const save = async () => {
+    setSaving(true);
+    await tableHook.update(entry.id, { [timeCol]: time.toISOString() });
+    setSaving(false);
+    close();
+  };
+
+  const doDelete = async () => {
+    await tableHook.remove(entry.id);
+    close();
+  };
+
+  const timeStr = `${String(time.getHours()).padStart(2, "0")}:${String(time.getMinutes()).padStart(2, "0")}`;
+
+  return (
+    <div
+      onClick={close}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)", zIndex: 400, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{ background: C.surface, borderRadius: "22px 22px 0 0", padding: "20px 20px 28px", width: "100%", maxWidth: 480, borderTop: `1px solid ${C.border}`, animation: "slideIn 0.25s" }}
+      >
+        <div style={{ width: 40, height: 4, background: C.cardHi, borderRadius: 2, margin: "0 auto 18px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+          <span style={{ fontSize: 24 }}>{entry.icon}</span>
+          <div>
+            <div style={{ fontFamily: fonts.display, fontSize: 22, letterSpacing: 1 }}>EDIT ENTRY</div>
+            <div style={{ fontSize: 13, color: C.muted2 }}>{entry.label}</div>
+          </div>
+        </div>
+
+        {!confirmDelete ? (
+          <>
+            <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: C.muted, marginBottom: 10 }}>ADJUST TIME</div>
+            <div style={{ textAlign: "center", fontFamily: fonts.display, fontSize: 38, color: C.accent, marginBottom: 14, letterSpacing: 1 }}>
+              {fmtTime(time)}
+            </div>
+            <div style={{ display: "flex", gap: 5, marginBottom: 12, justifyContent: "center" }}>
+              {[[-30, "−30m"], [-15, "−15m"], [-5, "−5m"], [5, "+5m"], [15, "+15m"], [30, "+30m"]].map(([m, lbl]) => (
+                <button
+                  key={m}
+                  onClick={() => adjust(m)}
+                  style={{ flex: 1, padding: "10px 0", borderRadius: 9, border: `1px solid ${C.border}`, background: C.card, color: C.muted2, fontSize: 10.5, fontFamily: fonts.mono, cursor: "pointer" }}
+                >
+                  {lbl}
+                </button>
+              ))}
+            </div>
+            <input
+              type="time"
+              value={timeStr}
+              onChange={(e) => {
+                const [h, m] = e.target.value.split(":").map(Number);
+                const d = new Date(time);
+                d.setHours(h, m, 0, 0);
+                setTime(d);
+              }}
+              style={{ width: "100%", background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "11px 13px", color: C.text, fontSize: 15, fontFamily: fonts.mono, outline: "none", marginBottom: 14, textAlign: "center" }}
+            />
+            <button onClick={save} disabled={saving} style={{ ...bigBtn(), marginTop: 4, opacity: saving ? 0.7 : 1 }}>
+              {saving ? "Saving…" : "Save changes"}
+            </button>
+            <div style={{ borderTop: `1px solid ${C.border}`, margin: "18px 0 14px" }} />
+            <button
+              onClick={() => setConfirmDelete(true)}
+              style={{ width: "100%", padding: 14, borderRadius: 12, border: "1px solid rgba(255,90,90,0.3)", background: "rgba(255,90,90,0.06)", color: C.danger, fontFamily: fonts.mono, fontSize: 12, letterSpacing: 1, cursor: "pointer" }}
+            >
+              DELETE ENTRY
+            </button>
+          </>
+        ) : (
+          <div style={{ animation: "fadeUp 0.15s" }}>
+            <div style={{ background: "rgba(255,90,90,0.08)", border: "1px solid rgba(255,90,90,0.3)", borderRadius: 12, padding: 16, marginBottom: 18 }}>
+              <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: C.danger, marginBottom: 6 }}>CONFIRM DELETE</div>
+              <div style={{ fontSize: 14, lineHeight: 1.55 }}>
+                Remove this entry? It stays in the audit trail but won't show in the app.
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                onClick={() => setConfirmDelete(false)}
+                style={{ ...bigBtn(), background: C.card, color: C.text, border: `1px solid ${C.border}`, flex: 1, marginTop: 0 }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={doDelete}
+                style={{ ...bigBtn(), background: C.danger, flex: 1, marginTop: 0, color: "#fff", border: "none" }}
+              >
+                Yes, delete
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

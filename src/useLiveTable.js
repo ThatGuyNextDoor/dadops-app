@@ -25,6 +25,7 @@ export function useLiveTable(table, { mapRow, orderBy = "created_at", limit = 20
       const { data, error: err } = await supabase
         .from(table)
         .select("*")
+        .is("deleted_at", null)
         .order(orderBy, { ascending: false })
         .limit(limit);
       if (!active) return;
@@ -39,7 +40,11 @@ export function useLiveTable(table, { mapRow, orderBy = "created_at", limit = 20
         setRows((prev) => [transform(payload.new), ...prev]);
       })
       .on("postgres_changes", { event: "UPDATE", schema: "public", table }, (payload) => {
-        setRows((prev) => prev.map((r) => (r.id === payload.new.id ? transform(payload.new) : r)));
+        if (payload.new.deleted_at) {
+          setRows((prev) => prev.filter((r) => r.id !== payload.new.id));
+        } else {
+          setRows((prev) => prev.map((r) => (r.id === payload.new.id ? transform(payload.new) : r)));
+        }
       })
       .subscribe();
 
@@ -83,5 +88,24 @@ export function useLiveTable(table, { mapRow, orderBy = "created_at", limit = 20
     [table, transform]
   );
 
-  return { rows, add, update, loading, error };
+  const remove = useCallback(
+    async (id) => {
+      if (!supabase) {
+        setRows((prev) => prev.filter((r) => r.id !== id));
+        return;
+      }
+      const { error: err } = await supabase
+        .from(table)
+        .update({ deleted_at: new Date().toISOString() })
+        .eq("id", id);
+      if (err) {
+        setError(err);
+        return;
+      }
+      setRows((prev) => prev.filter((r) => r.id !== id));
+    },
+    [table]
+  );
+
+  return { rows, add, update, remove, loading, error };
 }
