@@ -374,9 +374,9 @@ function daysUntil(d) {
 // MAIN APP
 // ============================================================
 function useIsTablet() {
-  const [isTablet, setIsTablet] = useState(typeof window !== "undefined" ? window.innerWidth >= 900 : false);
+  const [isTablet, setIsTablet] = useState(typeof window !== "undefined" ? window.innerWidth >= 1024 : false);
   useEffect(() => {
-    const onResize = () => setIsTablet(window.innerWidth >= 900);
+    const onResize = () => setIsTablet(window.innerWidth >= 1024);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
