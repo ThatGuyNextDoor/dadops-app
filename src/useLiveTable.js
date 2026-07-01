@@ -7,7 +7,7 @@ import { supabase } from "./supabaseClient";
  * `mapRow` converts a raw Supabase row into the shape the UI expects
  * (e.g. renaming columns, turning ISO strings into Date objects).
  */
-export function useLiveTable(table, { mapRow, orderBy = "created_at", limit = 200 } = {}) {
+export function useLiveTable(table, { mapRow, orderBy = "created_at", ascending = false, limit = 200 } = {}) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,7 +26,7 @@ export function useLiveTable(table, { mapRow, orderBy = "created_at", limit = 20
         .from(table)
         .select("*")
         .is("deleted_at", null)
-        .order(orderBy, { ascending: false })
+        .order(orderBy, { ascending })
         .limit(limit);
       if (!active) return;
       if (err) setError(err);
