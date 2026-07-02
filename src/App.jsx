@@ -1010,8 +1010,8 @@ function SmartCheckInCards({ clock, liveStatus, routineConfig, lastFeed, lastTem
     && liveStatus?.status !== "feeding" && hour >= 6 && hour < 23
     && !(snooze.card2 && clock < snooze.card2);
 
-  const tempHours = lastTemp ? (clock - lastTemp.at) / 3600000 : Infinity;
-  const card3Ready = tempHours > 6 && !(snooze.card3 && clock < snooze.card3);
+  const tempHours = lastTemp ? (clock - lastTemp.at) / 3600000 : null;
+  const card3Ready = tempHours != null && tempHours > 6 && !(snooze.card3 && clock < snooze.card3);
 
   const active = card2Ready ? "card2" : card1Ready ? "card1" : card3Ready ? "card3" : null;
 
