@@ -13,8 +13,9 @@ Unzip this folder, then in VS Code: **File → Open Folder** → select `dadops-
 1. Go to supabase.com → New Project (free tier is fine to start).
 2. Once it's created, open **SQL Editor → New query**, paste in the
    entire contents of `supabase-schema.sql` from this folder, and click **Run**.
-   This creates the feeds/nappies/sleeps/temps/daily_log/milestones tables
-   and turns on realtime sync.
+   This creates every table the app uses (feeds, nappies, sleeps, temps,
+   milestones, daily_log, daily_summary, people, live_status, shifts,
+   holder_log, routine_config, baby_metrics, photos) and turns on realtime sync.
 3. Go to **Project Settings → API**. You need two values:
    - **Project URL**
    - **anon public** key (NOT the service_role key — never put that one in client code)
@@ -85,14 +86,14 @@ separate build needed.
 ## 6. What's persisted vs. what isn't yet
 
 **Persisted (Supabase):** feeds, nappies, sleeps, temperature readings,
-milestones, Daily Log entries (private per person, not shown on the
-tablet or to other people).
+milestones, shifts, holder attribution, baby metrics, photos, routine
+config, live status, and Daily Log entries (private per person, not shown
+on the tablet or to other people).
 
-**Still local/static (next phase):** shift schedule (currently fixed
-demo data), Insights smart suggestions (currently stubbed), the AMA
-assistant (currently stubbed — needs a server-side Claude API call,
-should not be called directly from the browser since that would expose
-your API key).
+**Still local/static (next phase):** Insights smart suggestions (currently
+stubbed), the AMA assistant (currently stubbed — needs a server-side Claude
+API call, should not be called directly from the browser since that would
+expose your API key).
 
 ## 7. Security note before this goes further than your household
 
