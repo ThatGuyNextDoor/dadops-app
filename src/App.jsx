@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useContext, createContext } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback, useContext, createContext } from "react";
 import { supabase } from "./supabaseClient";
 import { useLiveTable } from "./useLiveTable";
 import { useWakeLock } from "./hooks/useWakeLock";
@@ -300,7 +300,7 @@ const STRINGS = {
   },
 };
 
-const LangContext = createContext({ lang: "en", t: (k) => STRINGS.en[k] ?? k, setLang: () => {}, darkMode: true, toggleTheme: () => {} });
+const LangContext = createContext({ lang: "en", t: (k) => STRINGS.en[k] ?? k, setLang: () => {}, darkMode: true, toggleTheme: () => {}, C: DARK });
 const useLang = () => useContext(LangContext);
 
 // ============================================================
@@ -347,29 +347,9 @@ const fonts = {
 };
 
 
-// ---- Inject fonts + global resets ----
-function useGlobalStyle() {
-  useEffect(() => {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap";
-    document.head.appendChild(link);
-    const style = document.createElement("style");
-    style.textContent = `
-      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-      ::-webkit-scrollbar { width: 0; height: 0; }
-      @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
-      @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-      @keyframes slideIn { from { transform: translateY(100%);} to {transform:none;} }
-      @keyframes scaleIn { from { opacity:0; transform: scale(0.96);} to {opacity:1; transform:none;} }
-      @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
-      @keyframes alarmPulse { 0%,100%{opacity:0;} 40%,60%{opacity:0.75;} }
-      @keyframes ambientFadeIn { from { opacity:0; } to { opacity:1; } }
-    `;
-    document.head.appendChild(style);
-  }, []);
-}
+// Fonts + global resets/keyframes are now declared statically in index.html
+// so the browser can discover and fetch them during initial HTML parse
+// instead of waiting for React to mount and inject a <link>/<style> tag.
 
 // ---- Helpers ----
 const now = () => new Date();
@@ -535,7 +515,6 @@ function useHandoverAlarm(shifts, shiftsT) {
 }
 
 export default function DadOps() {
-  useGlobalStyle();
   const isTablet = useIsTablet();
   useWakeLock(isTablet);
   const [lang, setLang] = useState(() => localStorage.getItem("dadops-lang") || "en");
@@ -562,7 +541,7 @@ export default function DadOps() {
   const activePeople = people.filter((p) => p.active !== false);
   const currentPerson = people.find((p) => p.name === currentPersonName) || activePeople[0] || people[0] || PEOPLE_DEFAULTS[0];
 
-  const ctx = { lang, t, setLang: switchLang, darkMode, toggleTheme };
+  const ctx = { lang, t, setLang: switchLang, darkMode, toggleTheme, C };
 
   if (isTablet) {
     return (
@@ -589,6 +568,7 @@ function MainApp({ currentPerson, people, liveStatus, setHolder, setActivity, ad
   const [moreOpen, setMoreOpen] = useState(false);
   const [moreScreen, setMoreScreen] = useState(null);
   const openQuickLog = (view) => { setFabView(view); setFabOpen(true); };
+  const openMore = useCallback(() => setMoreOpen(true), []);
 
   const user = currentPerson;
 
@@ -640,7 +620,7 @@ function MainApp({ currentPerson, people, liveStatus, setHolder, setActivity, ad
   const lastTemp = temps[0];
   const tempAlert = lastTemp && lastTemp.c >= 38;
   const { metrics, addMetric, deleteMetric } = useBabyMetrics();
-  const { photos, uploadPhoto, deletePhoto, getUrl } = usePhotos();
+  const { photos, uploadPhoto, deletePhoto, getUrl, getThumbUrl } = usePhotos();
   const { config: routineConfig, saveConfig: saveRoutineConfig } = useRoutineConfig();
   const { rows: holderLog, clearOld: clearOldHolderLog } = useHolderLog();
 
@@ -687,7 +667,7 @@ function MainApp({ currentPerson, people, liveStatus, setHolder, setActivity, ad
     });
   };
 
-  const shared = { feeds, sleeps, nappies, temps, feedsT, sleepsT, nappiesT, tempsT, lastTemp, tempAlert, shifts, shiftsT, lastFeed, lastNappy, user, people, liveStatus, setHolder, setActivity, addFeed, addNappy, addSleep, addTemp, setTab, metrics, photos, getUrl, routineConfig, saveRoutineConfig, holderLog, clearOldHolderLog, openQuickLog };
+  const shared = { feeds, sleeps, nappies, temps, feedsT, sleepsT, nappiesT, tempsT, lastTemp, tempAlert, shifts, shiftsT, lastFeed, lastNappy, user, people, liveStatus, setHolder, setActivity, addFeed, addNappy, addSleep, addTemp, setTab, metrics, photos, getUrl, getThumbUrl, routineConfig, saveRoutineConfig, holderLog, clearOldHolderLog, openQuickLog };
 
   if (isTablet) return <TabletDashboard shared={shared} />;
 
@@ -708,7 +688,7 @@ function MainApp({ currentPerson, people, liveStatus, setHolder, setActivity, ad
       {moreOpen && <MoreSheet close={() => setMoreOpen(false)} open={(s) => { setMoreScreen(s); setMoreOpen(false); }} />}
       {moreScreen && <MoreScreen screen={moreScreen} close={() => setMoreScreen(null)} user={user} dailyLogs={dailyLogs} addDailyLog={addDailyLog} people={people} addPerson={addPerson} toggleActive={toggleActive} metrics={metrics} addMetric={addMetric} deleteMetric={deleteMetric} photos={photos} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} getUrl={getUrl} {...shared} />}
 
-      <BottomNav tab={tab} setTab={setTab} openMore={() => setMoreOpen(true)} />
+      <BottomNav tab={tab} setTab={setTab} openMore={openMore} />
     </div>
   );
 }
@@ -780,7 +760,7 @@ function HandoverAlarmOverlay({ alarm, dismiss }) {
 // ============================================================
 function TabletDashboard({ shared }) {
   const { lang, t, setLang } = useLang();
-  const { shifts, lastFeed, lastNappy, feeds, sleeps, sleepsT, temps, lastTemp, tempAlert, addTemp, addSleep, people, metrics, photos, getUrl, routineConfig, liveStatus, setHolder, setActivity, holderLog } = shared;
+  const { shifts, lastFeed, lastNappy, feeds, sleeps, sleepsT, temps, lastTemp, tempAlert, addTemp, addSleep, people, metrics, photos, getUrl, getThumbUrl, routineConfig, liveStatus, setHolder, setActivity, holderLog } = shared;
   const [clock, setClock] = useState(now());
   const [tempOpen, setTempOpen] = useState(false);
   const [smartCardActive, setSmartCardActive] = useState(false);
@@ -953,10 +933,11 @@ function TabletDashboard({ shared }) {
             <div style={{ display: "flex", gap: 16 }}>
               {recent.map((p) => {
                 const url = getUrl?.(p.storage_path);
+                const thumbUrl = getThumbUrl?.(p.storage_path) || url;
                 return url ? (
                   <div key={p.id} style={{ flex: 1, maxWidth: 200 }}>
                     <div style={{ aspectRatio: "1", borderRadius: 14, overflow: "hidden", background: C.card }}>
-                      <img src={url} alt={p.caption || ""} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+                      <img src={thumbUrl} onError={(e) => { if (e.target.src !== url) e.target.src = url; }} alt={p.caption || ""} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
                     </div>
                     {p.caption && <div style={{ fontSize: 15, color: C.muted2, marginTop: 6, fontFamily: fonts.body, textAlign: "center" }}>{p.caption}</div>}
                   </div>
@@ -1362,7 +1343,8 @@ function DashPanel({ title, children }) {
   );
 }
 
-function BigStat({ icon, label, value, sub }) {
+const BigStat = React.memo(function BigStat({ icon, label, value, sub }) {
+  const { C } = useLang();
   return (
     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 26, minHeight: 52 }}>
       <div style={{ fontSize: 48, marginBottom: 10 }}>{icon}</div>
@@ -1371,7 +1353,7 @@ function BigStat({ icon, label, value, sub }) {
       {sub && <div style={{ fontSize: 22, color: C.muted2 }}>{sub}</div>}
     </div>
   );
-}
+});
 
 // ============================================================
 // TOP BAR
@@ -1390,8 +1372,8 @@ function ThemeToggleButton({ size = 48 }) {
   );
 }
 
-function TopBar({ user, people, switchPerson }) {
-  const { lang, t, setLang } = useLang();
+const TopBar = React.memo(function TopBar({ user, people, switchPerson }) {
+  const { lang, t, setLang, C } = useLang();
   const [open, setOpen] = useState(false);
   const active = (people || []).filter((p) => p.active !== false);
   return (
@@ -1436,20 +1418,21 @@ function TopBar({ user, people, switchPerson }) {
       </div>
     </div>
   );
-}
+});
 
 // ============================================================
 // SECTION LABEL
 // ============================================================
-function Label({ children }) {
+const Label = React.memo(function Label({ children }) {
+  const { C } = useLang();
   return <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: C.muted, margin: "22px 2px 12px" }}>{children}</div>;
-}
+});
 
 // ============================================================
 // WHO'S IN CHARGE CARD
 // ============================================================
-function WhoInChargeCard({ liveStatus, people, setHolder, large }) {
-  const { t } = useLang();
+const WhoInChargeCard = React.memo(function WhoInChargeCard({ liveStatus, people, setHolder, large }) {
+  const { t, C } = useLang();
   const [expanded, setExpanded] = useState(false);
   const activePeople = (people || []).filter((p) => p.active !== false);
   const holder = liveStatus?.holder_name
@@ -1485,7 +1468,7 @@ function WhoInChargeCard({ liveStatus, people, setHolder, large }) {
       )}
     </div>
   );
-}
+});
 
 // ============================================================
 // GENERIC ONE-TAP CONFIRM SHEET
@@ -3077,15 +3060,14 @@ function useBabyMetrics() {
   const [metrics, setMetrics] = useState([]);
   useEffect(() => {
     if (!supabase) return;
-    supabase.from("baby_metrics").select("*").is("deleted_at", null).order("measured_at", { ascending: false }).then(({ data }) => {
-      if (data) setMetrics(data.map((r) => ({ id: r.id, at: new Date(r.measured_at), weight: r.weight_kg, length: r.length_cm, head: r.head_cm, notes: r.notes })));
-    });
+    const load = () =>
+      supabase.from("baby_metrics").select("*").is("deleted_at", null).order("measured_at", { ascending: false }).limit(500).then(({ data }) => {
+        if (data) setMetrics(data.map((r) => ({ id: r.id, at: new Date(r.measured_at), weight: r.weight_kg, length: r.length_cm, head: r.head_cm, notes: r.notes })));
+      });
+    load();
     const ch = supabase.channel("baby-metrics-ch")
-      .on("postgres_changes", { event: "*", schema: "public", table: "baby_metrics" }, () => {
-        supabase.from("baby_metrics").select("*").is("deleted_at", null).order("measured_at", { ascending: false }).then(({ data }) => {
-          if (data) setMetrics(data.map((r) => ({ id: r.id, at: new Date(r.measured_at), weight: r.weight_kg, length: r.length_cm, head: r.head_cm, notes: r.notes })));
-        });
-      }).subscribe();
+      .on("postgres_changes", { event: "*", schema: "public", table: "baby_metrics" }, load)
+      .subscribe();
     return () => supabase.removeChannel(ch);
   }, []);
 
@@ -3111,7 +3093,7 @@ function useDailySummary() {
   const [summaries, setSummaries] = useState([]);
   useEffect(() => {
     if (!supabase) return;
-    const load = () => supabase.from("daily_summary").select("*").then(({ data }) => { if (data) setSummaries(data); });
+    const load = () => supabase.from("daily_summary").select("*").order("date", { ascending: false }).limit(400).then(({ data }) => { if (data) setSummaries(data); });
     load();
     const ch = supabase.channel("daily-summary-ch")
       .on("postgres_changes", { event: "*", schema: "public", table: "daily_summary" }, load)
@@ -3169,12 +3151,15 @@ function computeHolderStats(rows, clock) {
   return { totals, current };
 }
 
-function HolderAttributionBar({ rows, people, clock }) {
-  const { t } = useLang();
+const HolderAttributionBar = React.memo(function HolderAttributionBar({ rows, people, clock }) {
+  const { t, C } = useLang();
   const c = clock || new Date();
-  const { totals, current } = computeHolderStats(rows, c);
+  // Bucket to the minute: 24h attribution doesn't need second-level precision,
+  // and this avoids recomputing on every second-granularity re-render.
+  const minuteBucket = Math.floor(c.getTime() / 60000);
+  const { totals, current } = useMemo(() => computeHolderStats(rows, new Date(minuteBucket * 60000)), [rows, minuteBucket]);
   const totalMs = 24 * 3600000;
-  const entries = Object.entries(totals).filter(([, ms]) => ms > 0).sort((a, b) => b[1] - a[1]);
+  const entries = useMemo(() => Object.entries(totals).filter(([, ms]) => ms > 0).sort((a, b) => b[1] - a[1]), [totals]);
   if (entries.length === 0) return null;
 
   const currentMs = current ? c - current.start : 0;
@@ -3207,7 +3192,7 @@ function HolderAttributionBar({ rows, people, clock }) {
       )}
     </div>
   );
-}
+});
 
 // ============================================================
 // ROUTINE CONFIGURATION
@@ -3516,12 +3501,17 @@ async function compressImage(file, maxEdge = 1600, quality = 0.8) {
   });
 }
 
+// Thumbnails are stored alongside the full image under a `thumb_` prefix so the
+// path is derivable without a schema change. Older photos uploaded before this
+// existed won't have one — callers should fall back to the full image on 404.
+const thumbPath = (path) => path.replace(/^photos\//, "photos/thumb_");
+
 function usePhotos() {
   const [photos, setPhotos] = useState([]);
 
   const load = () => {
     if (!supabase) return;
-    supabase.from("photos").select("*").is("deleted_at", null).order("created_at", { ascending: false }).then(({ data }) => {
+    supabase.from("photos").select("*").is("deleted_at", null).order("created_at", { ascending: false }).limit(200).then(({ data }) => {
       if (data) setPhotos(data);
     });
   };
@@ -3537,11 +3527,13 @@ function usePhotos() {
 
   const uploadPhoto = async (file, caption, uploadedBy) => {
     if (!supabase) return;
-    const compressed = await compressImage(file);
+    const [compressed, thumb] = await Promise.all([compressImage(file), compressImage(file, 480, 0.7)]);
     const ext = "jpg";
     const path = `photos/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
     const { error: upErr } = await supabase.storage.from("photos").upload(path, compressed, { contentType: "image/jpeg" });
     if (upErr) { console.error("upload error", upErr); return null; }
+    // Best-effort: a missing thumbnail just falls back to the full image at render time.
+    await supabase.storage.from("photos").upload(thumbPath(path), thumb, { contentType: "image/jpeg" }).catch((e) => console.error("thumb upload error", e));
     const { data } = await supabase.from("photos").insert({ storage_path: path, caption: caption || null, uploaded_by: uploadedBy || null }).select().single();
     return data;
   };
@@ -3549,7 +3541,7 @@ function usePhotos() {
   const deletePhoto = async (id, storagePath) => {
     if (!supabase) { setPhotos((p) => p.filter((x) => x.id !== id)); return; }
     await supabase.from("photos").update({ deleted_at: new Date().toISOString() }).eq("id", id);
-    if (storagePath) await supabase.storage.from("photos").remove([storagePath]);
+    if (storagePath) await supabase.storage.from("photos").remove([storagePath, thumbPath(storagePath)]);
     setPhotos((p) => p.filter((x) => x.id !== id));
   };
 
@@ -3558,10 +3550,15 @@ function usePhotos() {
     return supabase.storage.from("photos").getPublicUrl(path).data?.publicUrl;
   };
 
-  return { photos, uploadPhoto, deletePhoto, getUrl };
+  const getThumbUrl = (path) => {
+    if (!supabase || !path) return null;
+    return supabase.storage.from("photos").getPublicUrl(thumbPath(path)).data?.publicUrl;
+  };
+
+  return { photos, uploadPhoto, deletePhoto, getUrl, getThumbUrl };
 }
 
-function Gallery({ photos, uploadPhoto, deletePhoto, getUrl, currentUser }) {
+function Gallery({ photos, uploadPhoto, deletePhoto, getUrl, getThumbUrl, currentUser }) {
   const { t } = useLang();
   const [selected, setSelected] = useState(null);
   const [caption, setCaption] = useState("");
@@ -3601,9 +3598,10 @@ function Gallery({ photos, uploadPhoto, deletePhoto, getUrl, currentUser }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
           {photos.map((p) => {
             const url = getUrl(p.storage_path);
+            const thumbUrl = getThumbUrl?.(p.storage_path) || url;
             return url ? (
               <div key={p.id} onClick={() => setSelected(p)} style={{ aspectRatio: "1", borderRadius: 10, overflow: "hidden", cursor: "pointer", background: C.card }}>
-                <img src={url} alt={p.caption || ""} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+                <img src={thumbUrl} onError={(e) => { if (e.target.src !== url) e.target.src = url; }} alt={p.caption || ""} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
               </div>
             ) : null;
           })}
@@ -3669,7 +3667,7 @@ function MoreSheet({ close, open }) {
 // ============================================================
 // MORE SCREENS
 // ============================================================
-function MoreScreen({ screen, close, user, dailyLogs, addDailyLog, people, addPerson, toggleActive, metrics, addMetric, deleteMetric, photos, uploadPhoto, deletePhoto, getUrl, routineConfig, saveRoutineConfig, clearOldHolderLog }) {
+function MoreScreen({ screen, close, user, dailyLogs, addDailyLog, people, addPerson, toggleActive, metrics, addMetric, deleteMetric, photos, uploadPhoto, deletePhoto, getUrl, getThumbUrl, routineConfig, saveRoutineConfig, clearOldHolderLog }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: C.bg, zIndex: 280, maxWidth: 480, margin: "0 auto", overflowY: "auto", animation: "fadeUp 0.2s" }}>
       <div style={{ padding: "16px 16px 100px" }}>
@@ -3678,7 +3676,7 @@ function MoreScreen({ screen, close, user, dailyLogs, addDailyLog, people, addPe
         {screen === "log" && <DailyLog user={user} entries={dailyLogs[user.name] || []} addEntry={(e) => addDailyLog(user.name, e)} />}
         {screen === "milestones" && <Milestones />}
         {screen === "metrics" && <BabyMetrics metrics={metrics || []} addMetric={addMetric} deleteMetric={deleteMetric} />}
-        {screen === "gallery" && <Gallery photos={photos || []} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} getUrl={getUrl} currentUser={user?.name} />}
+        {screen === "gallery" && <Gallery photos={photos || []} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} getUrl={getUrl} getThumbUrl={getThumbUrl} currentUser={user?.name} />}
         {screen === "routine" && <RoutineSettings config={routineConfig} saveConfig={saveRoutineConfig} />}
         {screen === "settings" && <Settings people={people} addPerson={addPerson} toggleActive={toggleActive} clearOldHolderLog={clearOldHolderLog} />}
       </div>
@@ -4082,8 +4080,8 @@ function SetRow({ label, value }) {
 // ============================================================
 // BOTTOM NAV
 // ============================================================
-function BottomNav({ tab, setTab, openMore }) {
-  const { t } = useLang();
+const BottomNav = React.memo(function BottomNav({ tab, setTab, openMore }) {
+  const { t, C } = useLang();
   const items = [
     ["shift", "🔄", t("shift")],
     ["protocols", "⚡", t("protocols")],
@@ -4104,7 +4102,7 @@ function BottomNav({ tab, setTab, openMore }) {
       })}
     </div>
   );
-}
+});
 
 // ============================================================
 // SHARED STYLES
