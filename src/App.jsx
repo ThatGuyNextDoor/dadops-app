@@ -2031,15 +2031,6 @@ function StatTile({ icon, label, value, sub }) {
 // ============================================================
 // FORMULA GUIDE — ml-first formula mixing helper
 // ============================================================
-function formatScoops(scoops) {
-  const rounded = Math.round(scoops * 4) / 4;
-  const whole = Math.floor(rounded);
-  const frac = Math.round((rounded - whole) * 4) / 4;
-  const fracGlyph = { 0: "", 0.25: "¼", 0.5: "½", 0.75: "¾" }[frac] || "";
-  if (whole === 0) return fracGlyph || "0";
-  return `${whole}${fracGlyph}`;
-}
-
 function suggestedFormulaMl(awakeMins, fallback) {
   if (awakeMins == null) return fallback;
   if (awakeMins < 180) return 60;
