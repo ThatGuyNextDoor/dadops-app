@@ -21,6 +21,9 @@ const DARK = {
   accentDim: "rgba(74,222,154,0.12)",
   accentBorder: "rgba(74,222,154,0.3)",
   cardHi: "#224535",
+  gold: "#facc15",
+  goldDim: "rgba(250,204,21,0.08)",
+  goldBorder: "rgba(250,204,21,0.4)",
 };
 
 const LIGHT = {
@@ -36,6 +39,9 @@ const LIGHT = {
   accentDim: "rgba(22,160,92,0.1)",
   accentBorder: "rgba(22,160,92,0.25)",
   cardHi: "#d4f0e0",
+  gold: "#b45309",
+  goldDim: "rgba(217,119,6,0.1)",
+  goldBorder: "rgba(217,119,6,0.4)",
 };
 
 // Module-level mutable theme reference. Reassigned by the root
@@ -51,6 +57,13 @@ const STRINGS = {
   en: {
     // Nav
     shift: "Shift", protocols: "Protocols", insights: "Insights", library: "Library", more: "More",
+    home: "Home", guide: "Guide", ask: "Ask",
+    askDisclaimer: "For general guidance only — always consult your healthcare provider for medical concerns.",
+    askPlaceholder: "Ask about feeds, sleep, development…",
+    askQuestionsRemaining: (n) => `${n} of 10 questions remaining this session`,
+    askLimitReached: "You've reached the session limit. Reload the app to start a new session.",
+    askStarter1: "When should Jacob's next feed be?", askStarter2: "Why is he so unsettled today?",
+    askStarter3: "What are normal newborn sleep patterns?", askStarter4: "How do I know if he's getting enough milk?",
     // TopBar / person picker
     whoAreYou: "WHO ARE YOU?", switchPerson: "Switch person",
     lightMode: "Switch to light mode", darkModeLabel: "Switch to dark mode",
@@ -159,10 +172,39 @@ const STRINGS = {
     addCaption: "Add a caption (optional)", uploading: "Uploading…",
     noPhotosYet: "No photos yet — take one to start.",
     latestPhotos: "LATEST PHOTOS",
+    // Live status hero / KPI row / formula guide (Step 2/4)
+    lastTemp: "Last Temp", kpiNextFeed: "Next Feed", kpiOverdue: "Overdue",
+    formulaGuide: "Formula Guide", tapForGuide: "Tap for guide",
+    confirmWakeTitle: "He's awake!", confirmWakeBody: "Log that Jacob just woke up?",
+    confirmSleepTitle: "He fell asleep", confirmSleepBody: "Log that Jacob just fell asleep?",
+    confirmYes: "Yes, confirm", tapToUpdate: "Tap to update",
+    earlierEntries: (n) => `+ ${n} earlier ${n === 1 ? "entry" : "entries"}`, showLess: "Show less",
+    awakeSince: (d) => `Jacob has been awake ${d}`, recommendedAmount: (ml) => `recommended: ${ml}`,
+    waterLabel: "Water", powderLabel: "Powder", scoopUnit: (n) => (n === 1 ? "scoop" : "scoops"),
+    saveAsTarget: "Save as target", targetSaved: "Target saved",
+    // Feed timer / nappy photo (Step 3)
+    startedAt: "Started at", addBottleTopUp: "Add bottle top-up", addPhotoOptional: "📷 Add photo",
+    uploadingPhoto: "Uploading photo…",
+    // Contextual protocol advice cards (Step 5)
+    adviceLongNap: (mins) => `Long nap — if he's been down over ${mins} minutes, it's fine to gently rouse him to keep the day rhythm on track. Or let him sleep — trust your read.`,
+    adviceJustWoke: (mins) => `He's awake — awake window is usually ${mins} min for this age. Watch for tired cues: eye rubbing, yawning, glazed look, losing interest in surroundings.`,
+    adviceFeedWindow: (hrs, ml) => `Feed window — it's been ${hrs} hours since the last feed. Recommended ${ml} if he's showing hunger cues.`,
+    adviceTemp: "Temperature flag — 38°C or above in a baby under 3 months always warrants a call to your provider or Pregnancy, Birth & Baby 1800 882 436, day or night.",
+    // Milestones achievement system (Step 7)
+    milestonesRecommended: "MILESTONES", milestonesYourMilestones: "YOUR MILESTONES", milestonesAddOwn: "+ Add your own",
+    milestoneWhenHappened: "When did this happen?", milestoneTellUs: "Tell us about it (optional)",
+    milestoneConfirm: "Confirm", milestoneLocked: "Not yet", milestoneAchieved: "Achieved",
   },
   es: {
     // Nav
     shift: "Turno", protocols: "Protocolos", insights: "Análisis", library: "Biblioteca", more: "Más",
+    home: "Inicio", guide: "Guía", ask: "Preguntar",
+    askDisclaimer: "Solo orientación general — consulta siempre a tu proveedor de salud ante cualquier duda médica.",
+    askPlaceholder: "Pregunta sobre tomas, sueño, desarrollo…",
+    askQuestionsRemaining: (n) => `${n} de 10 preguntas restantes en esta sesión`,
+    askLimitReached: "Has alcanzado el límite de la sesión. Recarga la app para empezar una nueva.",
+    askStarter1: "¿Cuándo debería ser la próxima toma de Jacob?", askStarter2: "¿Por qué está tan inquieto hoy?",
+    askStarter3: "¿Cuáles son los patrones normales de sueño de un recién nacido?", askStarter4: "¿Cómo sé si está comiendo suficiente?",
     // TopBar / person picker
     whoAreYou: "¿QUIÉN ERES?", switchPerson: "Cambiar persona",
     lightMode: "Cambiar a modo claro", darkModeLabel: "Cambiar a modo oscuro",
@@ -271,6 +313,28 @@ const STRINGS = {
     addCaption: "Añadir un pie de foto (opcional)", uploading: "Subiendo…",
     noPhotosYet: "Sin fotos aún — toma una para empezar.",
     latestPhotos: "ÚLTIMAS FOTOS",
+    // Live status hero / KPI row / formula guide (Step 2/4)
+    lastTemp: "Última Temperatura", kpiNextFeed: "Próxima Toma", kpiOverdue: "Atrasada",
+    formulaGuide: "Guía de Fórmula", tapForGuide: "Toca para la guía",
+    confirmWakeTitle: "¡Está despierto!", confirmWakeBody: "¿Registrar que Jacob se acaba de despertar?",
+    confirmSleepTitle: "Se durmió", confirmSleepBody: "¿Registrar que Jacob se acaba de dormir?",
+    confirmYes: "Sí, confirmar", tapToUpdate: "Toca para actualizar",
+    earlierEntries: (n) => `+ ${n} ${n === 1 ? "entrada anterior" : "entradas anteriores"}`, showLess: "Mostrar menos",
+    awakeSince: (d) => `Jacob lleva despierto ${d}`, recommendedAmount: (ml) => `recomendado: ${ml}`,
+    waterLabel: "Agua", powderLabel: "Fórmula en polvo", scoopUnit: (n) => (n === 1 ? "cucharada" : "cucharadas"),
+    saveAsTarget: "Guardar como objetivo", targetSaved: "Objetivo guardado",
+    // Feed timer / nappy photo (Step 3)
+    startedAt: "Comenzó a las", addBottleTopUp: "Añadir complemento de biberón", addPhotoOptional: "📷 Añadir foto",
+    uploadingPhoto: "Subiendo foto…",
+    // Contextual protocol advice cards (Step 5)
+    adviceLongNap: (mins) => `Siesta larga — si lleva más de ${mins} minutos dormido, está bien despertarlo con suavidad para mantener el ritmo del día. O déjalo dormir — confía en tu criterio.`,
+    adviceJustWoke: (mins) => `Está despierto — la ventana de vigilia suele ser de ${mins} min a esta edad. Vigila señales de sueño: se frota los ojos, bosteza, mirada perdida, pierde interés en su entorno.`,
+    adviceFeedWindow: (hrs, ml) => `Ventana de toma — han pasado ${hrs} horas desde la última toma. Se recomienda ${ml} si muestra señales de hambre.`,
+    adviceTemp: "Alerta de temperatura — 38°C o más en un bebé menor de 3 meses siempre requiere llamar a tu médico o a Pregnancy, Birth & Baby 1800 882 436, de día o de noche.",
+    // Milestones achievement system (Step 7)
+    milestonesRecommended: "HITOS", milestonesYourMilestones: "TUS HITOS", milestonesAddOwn: "+ Añade el tuyo",
+    milestoneWhenHappened: "¿Cuándo ocurrió esto?", milestoneTellUs: "Cuéntanos sobre esto (opcional)",
+    milestoneConfirm: "Confirmar", milestoneLocked: "Aún no", milestoneAchieved: "Logrado",
   },
 };
 
@@ -340,6 +404,10 @@ function useGlobalStyle() {
       @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
       @keyframes alarmPulse { 0%,100%{opacity:0;} 40%,60%{opacity:0.75;} }
       @keyframes ambientFadeIn { from { opacity:0; } to { opacity:1; } }
+      @keyframes confettiBurst {
+        0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+        100% { transform: translate(var(--cx, 40px), var(--cy, -70px)) rotate(var(--cr, 200deg)); opacity: 0; }
+      }
     `;
     document.head.appendChild(style);
   }, []);
@@ -374,12 +442,14 @@ function daysUntil(d) {
 // MAIN APP
 // ============================================================
 function useIsTablet() {
-  const [isTablet, setIsTablet] = useState(typeof window !== "undefined" ? window.innerWidth >= 1024 : false);
-  useEffect(() => {
-    const onResize = () => setIsTablet(window.innerWidth >= 1024);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+  const [isTablet] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const w = window.screen.width;
+    const h = window.screen.height;
+    const long = Math.max(w, h);
+    const short = Math.min(w, h);
+    return short >= 768 && long >= 1024;
+  });
   return isTablet;
 }
 
@@ -545,10 +615,12 @@ export default function DadOps() {
 // MAIN APP (phone + tablet data layer)
 // ============================================================
 function MainApp({ currentPerson, people, liveStatus, setHolder, setActivity, addPerson, toggleActive, switchPerson, isTablet }) {
-  const [tab, setTab] = useState("shift");
+  const [tab, setTab] = useState("home");
   const [fabOpen, setFabOpen] = useState(false);
+  const [fabView, setFabView] = useState(null);
   const [moreOpen, setMoreOpen] = useState(false);
   const [moreScreen, setMoreScreen] = useState(null);
+  const openQuickLog = (view) => { setFabView(view); setFabOpen(true); };
 
   const user = currentPerson;
 
@@ -647,28 +719,29 @@ function MainApp({ currentPerson, people, liveStatus, setHolder, setActivity, ad
     });
   };
 
-  const shared = { feeds, sleeps, nappies, temps, feedsT, sleepsT, nappiesT, tempsT, lastTemp, tempAlert, shifts, shiftsT, lastFeed, lastNappy, user, people, liveStatus, setHolder, setActivity, addFeed, addNappy, addSleep, addTemp, setTab, metrics, photos, getUrl, routineConfig, saveRoutineConfig, holderLog, clearOldHolderLog };
+  const shared = { feeds, sleeps, nappies, temps, feedsT, sleepsT, nappiesT, tempsT, lastTemp, tempAlert, shifts, shiftsT, lastFeed, lastNappy, user, people, liveStatus, setHolder, setActivity, addFeed, addNappy, addSleep, addTemp, setTab, metrics, photos, uploadPhoto, getUrl, routineConfig, saveRoutineConfig, holderLog, clearOldHolderLog, openQuickLog };
 
   if (isTablet) return <TabletDashboard shared={shared} />;
 
   return (
     <div style={{ background: C.bg, minHeight: "100vh", fontFamily: fonts.body, color: C.text, position: "relative", maxWidth: 480, margin: "0 auto", overflow: "hidden" }}>
       {handoverAlarm && <HandoverAlarmOverlay alarm={handoverAlarm} dismiss={dismissAlarm} />}
-      <TopBar user={user} people={people} switchPerson={switchPerson} />
+      <TopBar user={user} people={people} switchPerson={switchPerson} onOpenSettings={() => setMoreOpen(true)} openQuickLog={openQuickLog} />
 
-      <div style={{ padding: "0 16px 120px", minHeight: "100vh" }}>
-        {tab === "shift" && <Shift {...shared} />}
-        {tab === "protocols" && <Protocols {...shared} />}
+      <div style={{ padding: "0 16px", paddingBottom: "calc(72px + env(safe-area-inset-bottom, 16px) + 80px)", minHeight: "100vh" }}>
+        {tab === "home" && <Shift {...shared} />}
+        {tab === "guide" && <Guide {...shared} />}
         {tab === "insights" && <Insights {...shared} />}
-        {tab === "library" && <Library {...shared} />}
+        {tab === "gallery" && <Gallery photos={photos || []} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} getUrl={getUrl} currentUser={user?.name} />}
+        {tab === "ask" && <AMA embedded user={user} />}
       </div>
 
-      <QuickLogFab open={fabOpen} setOpen={setFabOpen} addFeed={addFeed} addNappy={addNappy} addSleep={addSleep} addTemp={addTemp} liveStatus={liveStatus} setActivity={setActivity} />
+      <QuickLogFab open={fabOpen} setOpen={setFabOpen} view={fabView} setView={setFabView} addFeed={addFeed} addNappy={addNappy} addSleep={addSleep} addTemp={addTemp} liveStatus={liveStatus} setActivity={setActivity} uploadPhoto={uploadPhoto} currentUser={user?.name} />
 
-      {moreOpen && <MoreSheet close={() => setMoreOpen(false)} open={(s) => { setMoreScreen(s); setMoreOpen(false); }} />}
-      {moreScreen && <MoreScreen screen={moreScreen} close={() => setMoreScreen(null)} user={user} dailyLogs={dailyLogs} addDailyLog={addDailyLog} people={people} addPerson={addPerson} toggleActive={toggleActive} metrics={metrics} addMetric={addMetric} deleteMetric={deleteMetric} photos={photos} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} getUrl={getUrl} {...shared} />}
+      {moreOpen && <SettingsMenu close={() => setMoreOpen(false)} open={(s) => { setMoreScreen(s); setMoreOpen(false); }} />}
+      {moreScreen && <MoreScreen screen={moreScreen} close={() => setMoreScreen(null)} user={user} dailyLogs={dailyLogs} addDailyLog={addDailyLog} people={people} addPerson={addPerson} toggleActive={toggleActive} metrics={metrics} addMetric={addMetric} deleteMetric={deleteMetric} routineConfig={routineConfig} saveRoutineConfig={saveRoutineConfig} clearOldHolderLog={clearOldHolderLog} />}
 
-      <BottomNav tab={tab} setTab={setTab} openMore={() => setMoreOpen(true)} />
+      <BottomNav tab={tab} setTab={setTab} />
     </div>
   );
 }
@@ -740,9 +813,12 @@ function HandoverAlarmOverlay({ alarm, dismiss }) {
 // ============================================================
 function TabletDashboard({ shared }) {
   const { lang, t, setLang } = useLang();
-  const { shifts, lastFeed, lastNappy, feeds, sleeps, sleepsT, temps, lastTemp, tempAlert, addTemp, addSleep, people, metrics, photos, getUrl, routineConfig, liveStatus, setHolder, setActivity, holderLog } = shared;
+  const { shifts, lastFeed, lastNappy, feeds, sleeps, sleepsT, temps, lastTemp, tempAlert, addFeed, addNappy, addSleep, addTemp, people, metrics, photos, uploadPhoto, getUrl, routineConfig, liveStatus, setHolder, setActivity, holderLog, user } = shared;
   const [clock, setClock] = useState(now());
   const [tempOpen, setTempOpen] = useState(false);
+  const [fabOpen, setFabOpen] = useState(false);
+  const [fabView, setFabView] = useState(null);
+  const openQuickLog = (view) => { setFabView(view); setFabOpen(true); };
   const [smartCardActive, setSmartCardActive] = useState(false);
   const [step8Active, setStep8Active] = useState(false);
   const [step9Active, setStep9Active] = useState(false);
@@ -773,8 +849,8 @@ function TabletDashboard({ shared }) {
       {/* Header strip */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 14 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 16 }}>
-          <div style={{ fontFamily: fonts.display, fontSize: 44, letterSpacing: 2, color: C.accent }}>DADOPS</div>
-          <div style={{ fontFamily: fonts.mono, fontSize: 19, color: C.muted2, letterSpacing: 1 }}>JACOB · FAMILY DASHBOARD</div>
+          <div style={{ fontFamily: fonts.display, fontSize: 55, letterSpacing: 2, color: C.accent }}>DADOPS</div>
+          <div style={{ fontFamily: fonts.mono, fontSize: 24, color: C.muted2, letterSpacing: 1 }}>JACOB · FAMILY DASHBOARD</div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
           {(() => {
@@ -783,28 +859,31 @@ function TabletDashboard({ shared }) {
             if (!latestWeight && !latestLength) return null;
             const parts = [latestWeight ? `${latestWeight.weight.toFixed(2)} kg` : null, latestLength ? `${latestLength.length.toFixed(1)} cm` : null].filter(Boolean);
             return (
-              <div style={{ fontFamily: fonts.mono, fontSize: 18, color: C.muted2, letterSpacing: 1 }}>
+              <div style={{ fontFamily: fonts.mono, fontSize: 22, color: C.muted2, letterSpacing: 1 }}>
                 JACOB · {parts.join(" · ")}
               </div>
             );
           })()}
           {routineConfig && (
-            <div style={{ fontFamily: fonts.mono, fontSize: 18, color: C.muted2, letterSpacing: 1 }}>
+            <div style={{ fontFamily: fonts.mono, fontSize: 22, color: C.muted2, letterSpacing: 1 }}>
               🍼 {lastFeed ? t("nextFeedDue", fmtTime(nextFeedDue(lastFeed, routineConfig))) : t("nextFeedDueUnknown")}
             </div>
           )}
-          <button onClick={() => setTempOpen(true)} style={{ display: "flex", alignItems: "center", gap: 10, background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "16px 28px", color: C.text, fontSize: 22, fontWeight: 600, cursor: "pointer", minHeight: 56 }}>
-            🌡️ Add Temp
+          <button onClick={() => openQuickLog("feed")} style={{ display: "flex", alignItems: "center", gap: 7, height: 36, padding: "0 14px", borderRadius: 18, border: `1px solid ${C.accentBorder}`, background: C.accentDim, color: C.text, cursor: "pointer", fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1, whiteSpace: "nowrap" }}>
+            <span style={{ fontSize: 15 }}>🍼</span>FEED
           </button>
-          <div style={{ display: "flex", borderRadius: 24, overflow: "hidden", border: `1px solid ${C.border}`, minHeight: 48 }}>
+          <button onClick={() => openQuickLog("nappy")} style={{ display: "flex", alignItems: "center", gap: 7, height: 36, padding: "0 14px", borderRadius: 18, border: `1px solid ${C.accentBorder}`, background: C.accentDim, color: C.text, cursor: "pointer", fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1, whiteSpace: "nowrap" }}>
+            <span style={{ fontSize: 15 }}>👶</span>NAPPY
+          </button>
+          <div style={{ display: "flex", borderRadius: 24, overflow: "hidden", border: `1px solid ${C.border}`, minHeight: 52 }}>
             {["en", "es"].map((l) => (
-              <button key={l} onClick={() => setLang(l)} style={{ padding: "0 18px", minHeight: 48, background: lang === l ? C.accentDim : "transparent", border: "none", color: lang === l ? C.accent : C.muted, fontFamily: fonts.mono, fontSize: 16, fontWeight: 700, letterSpacing: 1, cursor: "pointer" }}>
+              <button key={l} onClick={() => setLang(l)} style={{ padding: "0 20px", minHeight: 52, background: lang === l ? C.accentDim : "transparent", border: "none", color: lang === l ? C.accent : C.muted, fontFamily: fonts.mono, fontSize: 20, fontWeight: 700, letterSpacing: 1, cursor: "pointer" }}>
                 {l.toUpperCase()}
               </button>
             ))}
           </div>
           <ThemeToggleButton />
-          <div style={{ fontFamily: fonts.mono, fontSize: 40, color: C.text, letterSpacing: 1 }}>{fmtTime(clock)}</div>
+          <div style={{ fontFamily: fonts.mono, fontSize: 50, color: C.text, letterSpacing: 1 }}>{fmtTime(clock)}</div>
         </div>
       </div>
 
@@ -812,13 +891,13 @@ function TabletDashboard({ shared }) {
 
       {tempAlert && (
         <div style={{ background: "rgba(255,90,90,0.08)", border: "1px solid rgba(255,90,90,0.3)", borderRadius: 14, padding: "16px 20px", marginBottom: 22, display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ fontFamily: fonts.mono, fontSize: 12, letterSpacing: 2, color: C.danger, whiteSpace: "nowrap" }}>ACTION NEEDED</span>
-          <span style={{ fontSize: 16, color: C.danger }}>Last temp {lastTemp.c.toFixed(1)}°C ({agoStr(lastTemp.at)}) — call your provider or Pregnancy, Birth & Baby 1800 882 436.</span>
+          <span style={{ fontFamily: fonts.mono, fontSize: 15, letterSpacing: 2, color: C.danger, whiteSpace: "nowrap" }}>ACTION NEEDED</span>
+          <span style={{ fontSize: 20, color: C.danger }}>Last temp {lastTemp.c.toFixed(1)}°C ({agoStr(lastTemp.at)}) — call your provider or Pregnancy, Birth & Baby 1800 882 436.</span>
         </div>
       )}
 
-      {/* Four-panel grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr 1fr 1fr", gap: 24, alignItems: "start" }}>
+      {/* Four-panel grid — minmax lets columns reflow gracefully in portrait */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, alignItems: "start" }}>
         {/* Panel 1 — Shifts */}
         <DashPanel title="SHIFTS">
           {(() => {
@@ -826,18 +905,18 @@ function TabletDashboard({ shared }) {
               .map((s) => ({ ...s, state: s.start <= clock && (!s.end || s.end > clock) ? "active" : s.start > clock ? "next" : "past" }))
               .filter((s) => s.state !== "past");
             if (visible.length === 0)
-              return <div style={{ fontSize: 19, color: C.muted2, textAlign: "center", padding: "30px 10px" }}>No shifts scheduled</div>;
+              return <div style={{ fontSize: 24, color: C.muted2, textAlign: "center", padding: "30px 10px" }}>No shifts scheduled</div>;
             return visible.map((s) => {
               const person = people.find((p) => p.name.toLowerCase() === (s.person || "").toLowerCase());
               const active = s.state === "active";
               return (
-                <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 16, background: active ? C.accentDim : C.card, border: `1px solid ${active ? C.accentBorder : C.border}`, borderRadius: 14, padding: "15px 18px", marginBottom: 10, minHeight: 48 }}>
+                <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 16, background: active ? C.accentDim : C.card, border: `1px solid ${active ? C.accentBorder : C.border}`, borderRadius: 14, padding: "18px 22px", marginBottom: 10, minHeight: 52 }}>
                   <div style={{ width: 12, height: 12, borderRadius: "50%", background: person?.color || C.muted, flexShrink: 0 }} />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 24, fontWeight: 600 }}>{person?.name}</div>
-                    <div style={{ fontSize: 18, color: C.muted2, fontFamily: fonts.mono, marginTop: 2 }}>{fmtTime(s.start)}{s.end ? ` – ${fmtTime(s.end)}` : s.label ? ` · ${s.label}` : ""}</div>
+                    <div style={{ fontSize: 30, fontWeight: 600 }}>{person?.name}</div>
+                    <div style={{ fontSize: 22, color: C.muted2, fontFamily: fonts.mono, marginTop: 2 }}>{fmtTime(s.start)}{s.end ? ` – ${fmtTime(s.end)}` : s.label ? ` · ${s.label}` : ""}</div>
                   </div>
-                  {active && <span style={{ fontFamily: fonts.mono, fontSize: 15, letterSpacing: 1, color: C.accent, background: C.accentDim, border: `1px solid ${C.accentBorder}`, padding: "5px 10px", borderRadius: 11, whiteSpace: "nowrap" }}>ON NOW</span>}
+                  {active && <span style={{ fontFamily: fonts.mono, fontSize: 19, letterSpacing: 1, color: C.accent, background: C.accentDim, border: `1px solid ${C.accentBorder}`, padding: "6px 12px", borderRadius: 11, whiteSpace: "nowrap" }}>ON NOW</span>}
                 </div>
               );
             });
@@ -854,7 +933,7 @@ function TabletDashboard({ shared }) {
             const awakeMins = !activeSleep && lastSleep ? Math.floor((clock - lastSleep.end) / 60000) : null;
             const forecastMins = awakeMins !== null ? Math.max(0, 90 - awakeMins) : null;
             return (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14 }}>
                 <BigStat icon="🍼" label="Last feed" value={lastFeed ? agoStr(lastFeed.at) : "—"} sub={lastFeed ? (lastFeed.type === "bottle" ? `Bottle · ${lastFeed.vol}ml` : `Breast · ${lastFeed.side}`) : ""} />
                 <BigStat icon="💧" label="Last nappy" value={lastNappy ? agoStr(lastNappy.at) : "—"} sub={lastNappy ? lastNappy.type : ""} />
                 <BigStat
@@ -879,26 +958,26 @@ function TabletDashboard({ shared }) {
           {lastTemp ? (
             <>
               <div style={{ textAlign: "center", marginBottom: 14 }}>
-                <div style={{ fontFamily: fonts.display, fontSize: 74, color: tempAlert ? C.danger : C.accent, lineHeight: 1 }}>{lastTemp.c.toFixed(1)}°C</div>
-                <div style={{ fontSize: 17, color: C.muted2, marginTop: 6 }}>{agoStr(lastTemp.at)}</div>
+                <div style={{ fontFamily: fonts.display, fontSize: 93, color: tempAlert ? C.danger : C.accent, lineHeight: 1 }}>{lastTemp.c.toFixed(1)}°C</div>
+                <div style={{ fontSize: 21, color: C.muted2, marginTop: 6 }}>{agoStr(lastTemp.at)}</div>
               </div>
               {temps.length > 1 && <TempChart temps={temps} />}
             </>
           ) : (
-            <div style={{ fontSize: 19, color: C.muted2, textAlign: "center", padding: "40px 10px" }}>No readings yet</div>
+            <div style={{ fontSize: 24, color: C.muted2, textAlign: "center", padding: "40px 10px" }}>No readings yet</div>
           )}
         </DashPanel>
 
         {/* Panel 4 — Latest insight */}
         <DashPanel title="LATEST INSIGHT">
           <div style={{ background: tempAlert ? "rgba(255,90,90,0.08)" : C.accentDim, border: `1px solid ${tempAlert ? "rgba(255,90,90,0.3)" : C.accentBorder}`, borderRadius: 14, padding: 20 }}>
-            <div style={{ fontSize: 20, lineHeight: 1.6, color: tempAlert ? C.danger : C.text }}>
+            <div style={{ fontSize: 25, lineHeight: 1.6, color: tempAlert ? C.danger : C.text }}>
               {tempAlert
                 ? "Last temperature reading was 38°C or higher. Call your provider's advice line now."
                 : "Feeds have been steady through the day — nappy output is on track. Nothing needs action right now."}
             </div>
           </div>
-          <div style={{ marginTop: 18, fontFamily: fonts.mono, fontSize: 16, letterSpacing: 1.5, color: C.muted, textAlign: "center" }}>
+          <div style={{ marginTop: 18, fontFamily: fonts.mono, fontSize: 20, letterSpacing: 1.5, color: C.muted, textAlign: "center" }}>
             No personal mood or journal data is shown here
           </div>
         </DashPanel>
@@ -909,7 +988,7 @@ function TabletDashboard({ shared }) {
         const recent = (photos || []).slice(0, 3);
         return (
           <div style={{ marginTop: 24 }}>
-            <div style={{ fontFamily: fonts.mono, fontSize: 13, letterSpacing: 2, color: C.accent, marginBottom: 14 }}>LATEST PHOTOS</div>
+            <div style={{ fontFamily: fonts.mono, fontSize: 16, letterSpacing: 2, color: C.accent, marginBottom: 14 }}>LATEST PHOTOS</div>
             <div style={{ display: "flex", gap: 16 }}>
               {recent.map((p) => {
                 const url = getUrl?.(p.storage_path);
@@ -918,7 +997,7 @@ function TabletDashboard({ shared }) {
                     <div style={{ aspectRatio: "1", borderRadius: 14, overflow: "hidden", background: C.card }}>
                       <img src={url} alt={p.caption || ""} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
                     </div>
-                    {p.caption && <div style={{ fontSize: 12, color: C.muted2, marginTop: 6, fontFamily: fonts.body, textAlign: "center" }}>{p.caption}</div>}
+                    {p.caption && <div style={{ fontSize: 15, color: C.muted2, marginTop: 6, fontFamily: fonts.body, textAlign: "center" }}>{p.caption}</div>}
                   </div>
                 ) : null;
               })}
@@ -935,6 +1014,8 @@ function TabletDashboard({ shared }) {
           </div>
         </div>
       )}
+
+      <QuickLogFab open={fabOpen} setOpen={setFabOpen} view={fabView} setView={setFabView} addFeed={addFeed} addNappy={addNappy} addSleep={addSleep} addTemp={addTemp} liveStatus={liveStatus} setActivity={setActivity} uploadPhoto={uploadPhoto} currentUser={user?.name} />
 
       {!ambientMode && (
         <SmartCheckInCards
@@ -1315,8 +1396,8 @@ function Step9Prompt({ clock, dailySummaries, addSummary, suppressed, onActiveCh
 
 function DashPanel({ title, children }) {
   return (
-    <div className="dadops-dashpanel" style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, minHeight: 380 }}>
-      <div style={{ fontFamily: fonts.mono, fontSize: 18, letterSpacing: 2, color: C.accent, marginBottom: 18 }}>{title}</div>
+    <div className="dadops-dashpanel" style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 20, padding: 28, minHeight: 420 }}>
+      <div style={{ fontFamily: fonts.mono, fontSize: 22, letterSpacing: 2, color: C.accent, marginBottom: 22 }}>{title}</div>
       {children}
     </div>
   );
@@ -1324,11 +1405,11 @@ function DashPanel({ title, children }) {
 
 function BigStat({ icon, label, value, sub }) {
   return (
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 22 }}>
-      <div style={{ fontSize: 38, marginBottom: 10 }}>{icon}</div>
-      <div style={{ fontFamily: fonts.mono, fontSize: 15, letterSpacing: 1, color: C.muted2, marginBottom: 6 }}>{label.toUpperCase()}</div>
-      <div style={{ fontSize: 36, fontWeight: 700, marginBottom: 4, lineHeight: 1.1 }}>{value}</div>
-      {sub && <div style={{ fontSize: 18, color: C.muted2 }}>{sub}</div>}
+    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 26, minHeight: 52 }}>
+      <div style={{ fontSize: 48, marginBottom: 10 }}>{icon}</div>
+      <div style={{ fontFamily: fonts.mono, fontSize: 19, letterSpacing: 1, color: C.muted2, marginBottom: 6 }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize: 45, fontWeight: 700, marginBottom: 4, lineHeight: 1.1 }}>{value}</div>
+      {sub && <div style={{ fontSize: 22, color: C.muted2 }}>{sub}</div>}
     </div>
   );
 }
@@ -1350,16 +1431,26 @@ function ThemeToggleButton({ size = 48 }) {
   );
 }
 
-function TopBar({ user, people, switchPerson }) {
+function TopBar({ user, people, switchPerson, onOpenSettings, openQuickLog }) {
   const { lang, t, setLang } = useLang();
   const [open, setOpen] = useState(false);
   const active = (people || []).filter((p) => p.active !== false);
+  const quickActionBtn = { display: "flex", alignItems: "center", gap: 7, height: 36, padding: "0 14px", borderRadius: 18, border: `1px solid ${C.accentBorder}`, background: C.accentDim, color: C.text, cursor: "pointer", fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1, whiteSpace: "nowrap" };
   return (
     <div style={{ padding: "16px 16px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${C.border}`, position: "sticky", top: 0, background: C.bg, zIndex: 50 }}>
       <div style={{ fontFamily: fonts.display, fontSize: 24, letterSpacing: 3 }}>
         DAD<span style={{ color: C.accent }}>OPS</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <button onClick={() => openQuickLog?.("feed")} style={quickActionBtn}>
+          <span style={{ fontSize: 15 }}>🍼</span>FEED
+        </button>
+        <button onClick={() => openQuickLog?.("nappy")} style={quickActionBtn}>
+          <span style={{ fontSize: 15 }}>👶</span>NAPPY
+        </button>
+        <button onClick={onOpenSettings} style={{ display: "grid", placeItems: "center", width: 36, height: 36, background: C.card, border: `1px solid ${C.border}`, borderRadius: "50%", color: C.text, fontSize: 16, cursor: "pointer" }}>
+          ⚙️
+        </button>
         <ThemeToggleButton size={36} />
         <div style={{ display: "flex", borderRadius: 20, overflow: "hidden", border: `1px solid ${C.border}` }}>
           {["en", "es"].map((l) => (
@@ -1448,11 +1539,269 @@ function WhoInChargeCard({ liveStatus, people, setHolder, large }) {
 }
 
 // ============================================================
+// GENERIC ONE-TAP CONFIRM SHEET
+// ============================================================
+function ConfirmSheet({ title, body, onConfirm, onCancel }) {
+  const { t } = useLang();
+  return (
+    <div onClick={onCancel} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)", zIndex: 400, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: C.surface, borderRadius: "22px 22px 0 0", padding: "24px 20px 28px", width: "100%", maxWidth: 480, borderTop: `1px solid ${C.border}`, animation: "slideIn 0.25s", textAlign: "center" }}>
+        <div style={{ width: 40, height: 4, background: C.cardHi, borderRadius: 2, margin: "0 auto 20px" }} />
+        <div style={{ fontFamily: fonts.display, fontSize: 30, letterSpacing: 1, marginBottom: 10 }}>{title}</div>
+        <div style={{ fontSize: 14.5, color: C.muted2, marginBottom: 22, lineHeight: 1.5 }}>{body}</div>
+        <button onClick={onConfirm} style={bigBtn()}>{t("confirmYes")}</button>
+        <button onClick={onCancel} style={{ ...backBtn(), display: "block", margin: "14px auto 0" }}>{t("cancel")}</button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// LIVE STATUS HERO — top of Shift screen, whole-card-tap toggle
+// ============================================================
+function LiveStatusHero({ sleeps, sleepsT, liveStatus, people, setHolder, setActivity, holderLog }) {
+  const { t } = useLang();
+  const [, setTick] = useState(0);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [holderExpanded, setHolderExpanded] = useState(false);
+  useEffect(() => {
+    const id = setInterval(() => setTick((x) => x + 1), 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  const n = new Date();
+  const activeSleep = sleeps.find((s) => !s.end);
+  const lastSleep = sleeps.find((s) => s.end);
+  const sleepMins = activeSleep ? Math.floor((n - activeSleep.start) / 60000) : null;
+  const awakeMins = !activeSleep && lastSleep ? Math.floor((n - lastSleep.end) / 60000) : null;
+
+  const holder = liveStatus?.holder_name
+    ? (people || []).find((p) => p.name === liveStatus.holder_name) || { name: liveStatus.holder_name, color: C.accent }
+    : null;
+  const activeHolderEntry = (holderLog || []).find((r) => !r.end);
+  const holderMins = activeHolderEntry ? Math.floor((n - activeHolderEntry.start) / 60000) : null;
+  const activePeople = (people || []).filter((p) => p.active !== false);
+
+  const confirmToggle = async () => {
+    if (activeSleep) {
+      await sleepsT.update(activeSleep.id, { end_ts: new Date().toISOString() });
+      setActivity("idle");
+    } else {
+      await sleepsT.add({ start: new Date(), end: null });
+      setActivity("napping");
+    }
+    setConfirmOpen(false);
+  };
+
+  return (
+    <>
+      <div onClick={() => setConfirmOpen(true)} style={{ cursor: "pointer", background: activeSleep ? "rgba(0,210,110,0.07)" : C.card, border: `1px solid ${activeSleep ? C.accentBorder : C.border}`, borderRadius: 20, padding: 22, marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          <div style={{ fontSize: 46, flexShrink: 0 }}>{activeSleep ? "😴" : "☀️"}</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: fonts.mono, fontSize: 11, letterSpacing: 2, color: activeSleep ? C.accent : C.muted2, marginBottom: 4 }}>
+              {activeSleep ? t("jacobSleeping") : t("jacobAwake")}
+            </div>
+            <div style={{ fontSize: 32, fontWeight: 700, lineHeight: 1.1 }}>
+              {activeSleep ? fmtDuration(sleepMins) : (awakeMins !== null ? fmtDuration(awakeMins) : "—")}
+            </div>
+          </div>
+          <div style={{ fontFamily: fonts.mono, fontSize: 9.5, color: C.muted, textAlign: "right", letterSpacing: 0.5, whiteSpace: "nowrap" }}>{t("tapToUpdate")}</div>
+        </div>
+
+        <div onClick={(e) => { e.stopPropagation(); setHolderExpanded(!holderExpanded); }} style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 12, cursor: "pointer", minHeight: 44 }}>
+          <div style={{ width: 34, height: 34, borderRadius: "50%", background: holder?.color || C.muted, display: "grid", placeItems: "center", color: "#000", fontWeight: 700, fontSize: 15, flexShrink: 0 }}>
+            {holder ? holder.name[0] : "?"}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.5, color: C.muted2 }}>{t("inCharge")}</div>
+            <div style={{ fontSize: 15, fontWeight: 600 }}>{holder?.name || t("noOneSet")}{holderMins !== null ? ` · ${fmtDuration(holderMins)}` : ""}</div>
+          </div>
+          <div style={{ color: C.muted, transform: holderExpanded ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>▾</div>
+        </div>
+
+        {holderExpanded && (
+          <div onClick={(e) => e.stopPropagation()} style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 8, animation: "fadeUp 0.15s" }}>
+            {activePeople.map((p) => (
+              <button key={p.id || p.name} onClick={() => { setHolder(p.name); setHolderExpanded(false); }}
+                style={{ display: "flex", alignItems: "center", gap: 8, background: liveStatus?.holder_name === p.name ? `${p.color}22` : C.surface, border: `1px solid ${liveStatus?.holder_name === p.name ? p.color : C.border}`, borderRadius: 11, padding: "9px 14px", minHeight: 44, cursor: "pointer", color: C.text }}>
+                <div style={{ width: 22, height: 22, borderRadius: "50%", background: p.color, display: "grid", placeItems: "center", color: "#000", fontWeight: 700, fontSize: 11 }}>{p.name[0]}</div>
+                <span style={{ fontSize: 14, fontWeight: 500 }}>{p.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {confirmOpen && (
+        <ConfirmSheet
+          title={activeSleep ? t("confirmWakeTitle") : t("confirmSleepTitle")}
+          body={activeSleep ? t("confirmWakeBody") : t("confirmSleepBody")}
+          onConfirm={confirmToggle}
+          onCancel={() => setConfirmOpen(false)}
+        />
+      )}
+    </>
+  );
+}
+
+// ============================================================
+// HORIZONTALLY SCROLLABLE KPI ROW
+// ============================================================
+function KpiRow({ lastFeed, lastNappy, lastTemp, routineConfig, awakeMins, openQuickLog, openFormula }) {
+  const { t } = useLang();
+  const nextDue = routineConfig && lastFeed ? nextFeedDue(lastFeed, routineConfig) : null;
+  const overdue = !!(nextDue && nextDue.getTime() < Date.now());
+  const tempAlert = lastTemp && lastTemp.c >= 38;
+  const rec = formulaRecommendation(awakeMins);
+
+  const feedLabel = (() => {
+    if (!lastFeed) return t("noFeedsYet");
+    if (lastFeed.type === "combo") return `Breast+Bottle · ${lastFeed.breastDurationMins || "?"}min · ${lastFeed.bottleVolMl || lastFeed.vol || "?"}ml`;
+    if (lastFeed.type === "breast") return `Breast (${lastFeed.side || "—"})${lastFeed.breastDurationMins ? ` · ${lastFeed.breastDurationMins}min` : ""}`;
+    return `Bottle · ${lastFeed.bottleVolMl || lastFeed.vol || "?"}ml`;
+  })();
+  const nappyLabel = lastNappy
+    ? ([lastNappy.urineLevel ? `Wet · ${lastNappy.urineLevel}` : null, lastNappy.stool ? "Soiled" : null].filter(Boolean).join(" · ") || lastNappy.type)
+    : t("noNappiesYet");
+
+  const cardBase = { flex: "0 0 auto", minWidth: 160, maxWidth: 200, scrollSnapAlign: "start", borderRadius: 16, padding: 14, minHeight: 110, display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer", color: C.text, textAlign: "left", fontFamily: fonts.body };
+  const cardLabel = { fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1, color: C.muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" };
+  const cardSub = { fontSize: 10.5, color: C.muted2, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" };
+
+  return (
+    <div style={{ display: "flex", gap: 10, overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", paddingBottom: 4, marginBottom: 16 }}>
+      <button onClick={() => openQuickLog("feed")} style={{ ...cardBase, background: C.card, border: `1px solid ${C.border}` }}>
+        <span style={{ fontSize: 20 }}>🍼</span>
+        <div>
+          <div style={cardLabel}>{t("lastFeed").toUpperCase()}</div>
+          <div style={{ fontSize: 16, fontWeight: 700 }}>{lastFeed ? agoStr(lastFeed.at) : "—"}</div>
+          <div style={cardSub}>{feedLabel}</div>
+        </div>
+      </button>
+
+      <button onClick={() => openQuickLog("feed")} style={{ ...cardBase, background: overdue ? "rgba(0,210,110,0.08)" : C.card, border: `1px solid ${overdue ? C.accentBorder : C.border}` }}>
+        <span style={{ fontSize: 20 }}>⏰</span>
+        <div>
+          <div style={cardLabel}>{t("kpiNextFeed").toUpperCase()}</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: overdue ? C.accent : C.text }}>{nextDue ? fmtTime(nextDue) : "—"}</div>
+          <div style={{ ...cardSub, color: overdue ? C.accent : C.muted2, fontWeight: overdue ? 700 : 400 }}>{nextDue ? (overdue ? t("kpiOverdue") : "") : ""}</div>
+        </div>
+      </button>
+
+      <button onClick={() => openQuickLog("nappy")} style={{ ...cardBase, background: C.card, border: `1px solid ${C.border}` }}>
+        <span style={{ fontSize: 20 }}>👶</span>
+        <div>
+          <div style={cardLabel}>{t("lastNappy").toUpperCase()}</div>
+          <div style={{ fontSize: 16, fontWeight: 700 }}>{lastNappy ? agoStr(lastNappy.at) : "—"}</div>
+          <div style={cardSub}>{nappyLabel}</div>
+        </div>
+      </button>
+
+      <button onClick={() => openQuickLog("temp")} style={{ ...cardBase, background: tempAlert ? "rgba(255,90,90,0.08)" : C.card, border: `1px solid ${tempAlert ? C.danger : C.border}` }}>
+        <span style={{ fontSize: 20 }}>🌡️</span>
+        <div>
+          <div style={cardLabel}>{t("lastTemp").toUpperCase()}</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: tempAlert ? C.danger : C.text }}>{lastTemp ? `${lastTemp.c.toFixed(1)}°C` : "—"}</div>
+          <div style={cardSub}>{lastTemp ? agoStr(lastTemp.at) : ""}</div>
+        </div>
+      </button>
+
+      <button onClick={openFormula} style={{ ...cardBase, background: C.card, border: `1px solid ${C.border}` }}>
+        <span style={{ fontSize: 20 }}>🧪</span>
+        <div>
+          <div style={cardLabel}>{t("formulaGuide").toUpperCase()}</div>
+          <div style={{ fontSize: 16, fontWeight: 700 }}>{rec ? rec.label : "—"}</div>
+          <div style={cardSub}>{t("tapForGuide")}</div>
+        </div>
+      </button>
+    </div>
+  );
+}
+
+// ============================================================
+// CONTEXTUAL PROTOCOL ADVICE CARD — one at a time, dismissable
+// ============================================================
+function ProtocolAdviceCard({ liveStatus, routineConfig, sleeps, lastFeed, lastTemp, awakeMins }) {
+  const { t } = useLang();
+  const [, setTick] = useState(0);
+  const [dismissedUntil, setDismissedUntil] = useState({});
+  const [visibleKey, setVisibleKey] = useState(null);
+  const [justWoke, setJustWoke] = useState(false);
+  const [tempFlagged, setTempFlagged] = useState(false);
+  const prevStatusRef = useRef(liveStatus?.status);
+  const prevTempIdRef = useRef(lastTemp?.id);
+
+  useEffect(() => {
+    const id = setInterval(() => setTick((x) => x + 1), 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (prevStatusRef.current && prevStatusRef.current !== "idle" && liveStatus?.status === "idle") {
+      setJustWoke(true);
+    }
+    prevStatusRef.current = liveStatus?.status;
+  }, [liveStatus?.status]);
+
+  useEffect(() => {
+    if (lastTemp && lastTemp.id !== prevTempIdRef.current && lastTemp.c >= 38) {
+      setTempFlagged(true);
+    }
+    prevTempIdRef.current = lastTemp?.id;
+  }, [lastTemp]);
+
+  const dismiss = (key) => {
+    setDismissedUntil((prev) => ({ ...prev, [key]: Date.now() + 30 * 60000 }));
+    if (key === "justWoke") setJustWoke(false);
+    if (key === "temp") setTempFlagged(false);
+  };
+
+  const isDismissed = (key) => dismissedUntil[key] && dismissedUntil[key] > Date.now();
+
+  const config = routineConfig || ROUTINE_DEFAULTS;
+  const activeSleep = sleeps.find((s) => !s.end);
+  const sleepMins = activeSleep ? Math.floor((Date.now() - activeSleep.start.getTime()) / 60000) : null;
+  const sinceFeedMins = lastFeed ? Math.floor((Date.now() - lastFeed.at.getTime()) / 60000) : null;
+  const rec = formulaRecommendation(awakeMins);
+
+  const candidates = [];
+  if (tempFlagged && !isDismissed("temp")) candidates.push({ key: "temp", body: t("adviceTemp") });
+  if (activeSleep && sleepMins != null && sleepMins > config.expectedNapMins + 20 && !isDismissed("longNap")) {
+    candidates.push({ key: "longNap", body: t("adviceLongNap", config.expectedNapMins) });
+  }
+  if (justWoke && !isDismissed("justWoke")) candidates.push({ key: "justWoke", body: t("adviceJustWoke", config.maxAwakeMins) });
+  if (!activeSleep && liveStatus?.status === "idle" && sinceFeedMins != null && sinceFeedMins > config.feedIntervalMins && !isDismissed("feedWindow")) {
+    candidates.push({ key: "feedWindow", body: t("adviceFeedWindow", (sinceFeedMins / 60).toFixed(1), rec ? rec.label : "60ml") });
+  }
+
+  const active = candidates[0] || null;
+
+  useEffect(() => {
+    if (!active) return;
+    setVisibleKey(active.key);
+    const id = setTimeout(() => dismiss(active.key), 5 * 60000);
+    return () => clearTimeout(id);
+  }, [active?.key]);
+
+  if (!active || active.key !== visibleKey) return null;
+
+  return (
+    <div style={{ background: "rgba(0,210,110,0.06)", border: `1px solid ${C.accentBorder}`, borderRadius: 14, padding: "14px 16px", marginBottom: 16, display: "flex", gap: 12, alignItems: "flex-start" }}>
+      <div style={{ fontSize: 18, flexShrink: 0 }}>💡</div>
+      <div style={{ flex: 1, fontSize: 13, lineHeight: 1.55 }}>{active.body}</div>
+      <button onClick={() => dismiss(active.key)} style={{ background: "none", border: "none", color: C.muted, fontSize: 16, cursor: "pointer", padding: 0, flexShrink: 0 }}>✕</button>
+    </div>
+  );
+}
+
+// ============================================================
 // TONIGHT
 // ============================================================
-function Shift({ shifts, shiftsT, lastFeed, lastNappy, user, feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT, tempsT, people, liveStatus, setHolder, setActivity, addFeed, routineConfig, holderLog }) {
+function Shift({ shifts, shiftsT, lastFeed, lastNappy, feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT, tempsT, people, liveStatus, setHolder, setActivity, addFeed, routineConfig, saveRoutineConfig, holderLog, openQuickLog }) {
   const { t } = useLang();
   const [manageOpen, setManageOpen] = useState(false);
+  const [formulaOpen, setFormulaOpen] = useState(false);
   const nameOf = (n) => people.find((p) => p.name.toLowerCase() === (n || "").toLowerCase())?.name || n || "—";
 
   const n = useMemo(() => new Date(), []);
@@ -1467,40 +1816,54 @@ function Shift({ shifts, shiftsT, lastFeed, lastNappy, user, feeds, nappies, sle
   const nextShift = withState.find((s) => s.state === "next");
   const visibleShifts = withState.filter((s) => s.state !== "past");
 
-  const sinceFeed = lastFeed ? Math.floor((new Date() - lastFeed.at) / 60000) : null;
-  const predict = sinceFeed === null ? null : Math.max(0, 165 - sinceFeed);
+  const activeSleep = sleeps.find((s) => !s.end);
+  const lastSleep = sleeps.find((s) => s.end);
+  const awakeMins = !activeSleep && lastSleep ? Math.floor((new Date() - lastSleep.end) / 60000) : null;
 
   const handOff = async () => {
     if (!activeShift) return;
     await shiftsT.update(activeShift.id, { status: "done", end_ts: new Date().toISOString() });
   };
 
+  const saveFormulaTarget = async (ml) => {
+    if (saveRoutineConfig) await saveRoutineConfig({ feedTargetMl: ml });
+  };
+
   return (
     <div style={{ animation: "fadeUp 0.3s" }}>
-      <Label>{t("inCharge")}</Label>
-      <WhoInChargeCard liveStatus={liveStatus} people={people} setHolder={setHolder} />
+      <LiveStatusCard liveStatus={liveStatus} setActivity={setActivity} addFeed={addFeed} />
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", margin: "22px 2px 12px" }}>
+      <LiveStatusHero
+        sleeps={sleeps} sleepsT={sleepsT} liveStatus={liveStatus} people={people}
+        setHolder={setHolder} setActivity={setActivity} holderLog={holderLog}
+      />
+
+      <KpiRow
+        lastFeed={lastFeed} lastNappy={lastNappy} lastTemp={temps[0]} routineConfig={routineConfig}
+        awakeMins={awakeMins} openQuickLog={openQuickLog} openFormula={() => setFormulaOpen(true)}
+      />
+
+      <ProtocolAdviceCard
+        liveStatus={liveStatus} routineConfig={routineConfig} sleeps={sleeps} lastFeed={lastFeed}
+        lastTemp={temps[0]} awakeMins={awakeMins}
+      />
+
+      <Label>{t("activityLog")}</Label>
+      <ActivityLog
+        feeds={feeds} nappies={nappies} sleeps={sleeps} temps={temps}
+        feedsT={feedsT} nappiesT={nappiesT} sleepsT={sleepsT} tempsT={tempsT} people={people}
+      />
+
+      {formulaOpen && (
+        <FormulaCalculatorModal close={() => setFormulaOpen(false)} awakeMins={awakeMins} saveTarget={saveFormulaTarget} />
+      )}
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", margin: "26px 2px 12px" }}>
         <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: C.muted }}>{t("shiftPlan")}</div>
         <button onClick={() => setManageOpen(true)} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 10, padding: "5px 12px", color: C.muted2, fontSize: 10, fontFamily: fonts.mono, letterSpacing: 1, cursor: "pointer" }}>
           MANAGE
         </button>
       </div>
-
-      <div style={{ background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 14, padding: 14, marginBottom: 16, display: "flex", gap: 12, alignItems: "center" }}>
-        <div style={{ fontSize: 22 }}>🔮</div>
-        <div style={{ fontSize: 13.5, lineHeight: 1.5 }}>
-          {lastFeed
-            ? <>Jacob last fed <b>{agoStr(lastFeed.at)}</b>. Expect a wake in roughly <b style={{ color: C.accent }}>{predict > 0 ? `${predict} min` : "any time now"}</b>.</>
-            : "No feeds logged yet — use + to start the wake forecast."}
-        </div>
-      </div>
-
-      {routineConfig && (
-        <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: C.muted2, marginBottom: 16, fontFamily: fonts.mono }}>
-          🍼 {lastFeed ? t("nextFeedDue", fmtTime(nextFeedDue(lastFeed, routineConfig))) : t("nextFeedDueUnknown")}
-        </div>
-      )}
 
       {visibleShifts.length === 0 ? (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 20, textAlign: "center", color: C.muted2, fontSize: 13.5, marginBottom: 10 }}>
@@ -1543,15 +1906,6 @@ function Shift({ shifts, shiftsT, lastFeed, lastNappy, user, feeds, nappies, sle
           <HolderAttributionBar rows={holderLog} people={people} clock={new Date()} />
         </>
       )}
-
-      <Label>{t("liveStatus")}</Label>
-      <LiveStatusCard sleeps={sleeps} sleepsT={sleepsT} lastFeed={lastFeed} lastNappy={lastNappy} people={people} liveStatus={liveStatus} setActivity={setActivity} addFeed={addFeed} />
-
-      <Label>{t("activityLog")}</Label>
-      <ActivityLog
-        feeds={feeds} nappies={nappies} sleeps={sleeps} temps={temps}
-        feedsT={feedsT} nappiesT={nappiesT} sleepsT={sleepsT} tempsT={tempsT} people={people}
-      />
 
       {manageOpen && <ShiftManager shiftsT={shiftsT} people={people} close={() => setManageOpen(false)} />}
     </div>
@@ -1664,7 +2018,7 @@ function ShiftForm({ initial, people, onSave, cancel }) {
   );
 }
 
-function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStatus, setActivity, addFeed }) {
+function LiveStatusCard({ liveStatus, setActivity, addFeed }) {
   const { t } = useLang();
   const [, setTick] = useState(0);
   const [showFinish, setShowFinish] = useState(false);
@@ -1674,36 +2028,18 @@ function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStat
   }, []);
 
   const n = new Date();
-  const activeSleep = sleeps.find((s) => !s.end);
-  const lastSleep = sleeps.find((s) => s.end);
-  const sleepMins = activeSleep ? Math.floor((n - activeSleep.start) / 60000) : null;
-  const lastSleepMins = lastSleep ? Math.round((lastSleep.end - lastSleep.start) / 60000) : null;
-  const awakeMins = !activeSleep && lastSleep ? Math.floor((n - lastSleep.end) / 60000) : null;
-  const sleepPerson = activeSleep ? (people || []).find((p) => p.name === activeSleep.by) : null;
-
   const isFeeding = liveStatus?.status === "feeding";
   const feedMins = isFeeding && liveStatus?.started_at
     ? Math.floor((n - new Date(liveStatus.started_at)) / 60000)
     : null;
 
-  const wakeUp = async () => {
-    if (!activeSleep) return;
-    await sleepsT.update(activeSleep.id, { end_ts: new Date().toISOString() });
-    setActivity("idle");
-  };
-
-  const feedLabel = (() => {
-    if (!lastFeed) return t("noFeedsYet");
-    if (lastFeed.type === "combo") return `Breast+Bottle · ${lastFeed.breastDurationMins || "?"}min · ${lastFeed.bottleVolMl || lastFeed.vol || "?"}ml`;
-    if (lastFeed.type === "breast") return `Breast (${lastFeed.side || "—"})${lastFeed.breastDurationMins ? ` · ${lastFeed.breastDurationMins}min` : ""}`;
-    return `Bottle ${lastFeed.bottleVolMl || lastFeed.vol || "?"}ml`;
-  })();
+  if (!isFeeding) return null;
 
   return (
     <>
       {/* Feeding status (if active) */}
-      {isFeeding && !showFinish && (
-        <div style={{ background: "rgba(0,210,110,0.08)", border: `1px solid ${C.accentBorder}`, borderRadius: 16, padding: "18px 20px", marginBottom: 12 }}>
+      {!showFinish && (
+        <div style={{ background: "rgba(0,210,110,0.08)", border: `1px solid ${C.accentBorder}`, borderRadius: 16, padding: "18px 20px", marginBottom: 14 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <div style={{ fontSize: 36, flexShrink: 0 }}>🤱</div>
             <div style={{ flex: 1 }}>
@@ -1726,65 +2062,12 @@ function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStat
       )}
 
       {/* Finish feeding form */}
-      {isFeeding && showFinish && (
-        <div style={{ background: C.surface, border: `1px solid ${C.accentBorder}`, borderRadius: 16, padding: 16, marginBottom: 12 }}>
-          <FeedLog liveStatus={liveStatus} onSave={(f) => { addFeed(f); setActivity("idle"); setShowFinish(false); }} back={() => setShowFinish(false)} />
+      {showFinish && (
+        <div style={{ background: C.surface, border: `1px solid ${C.accentBorder}`, borderRadius: 16, padding: 16, marginBottom: 14 }}>
+          <FeedLog liveStatus={liveStatus} setActivity={setActivity} onSave={(f) => { addFeed(f); setActivity("idle"); setShowFinish(false); }} back={() => setShowFinish(false)} />
         </div>
       )}
-
-      {/* Sleep / awake status */}
-      <div style={{ background: activeSleep ? "rgba(0,210,110,0.07)" : C.card, border: `1px solid ${activeSleep ? C.accentBorder : C.border}`, borderRadius: 16, padding: "18px 20px", marginBottom: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ fontSize: 36, flexShrink: 0 }}>{activeSleep ? "😴" : "☀️"}</div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: activeSleep ? C.accent : C.muted2, marginBottom: 4 }}>
-              {activeSleep ? t("jacobSleeping") : t("jacobAwake")}
-            </div>
-            <div style={{ fontSize: 24, fontWeight: 700, lineHeight: 1.1 }}>
-              {activeSleep
-                ? fmtDuration(sleepMins)
-                : awakeMins !== null ? t("awakenFor", fmtDuration(awakeMins)) : "—"}
-            </div>
-            {activeSleep && sleepPerson && (
-              <div style={{ fontSize: 12, color: C.muted2, marginTop: 4 }}>
-                <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: sleepPerson.color, marginRight: 5, verticalAlign: "middle" }} />
-                {t("putDownBy", sleepPerson.name)}
-              </div>
-            )}
-            {!activeSleep && lastSleep && (
-              <div style={{ fontSize: 12, color: C.muted2, marginTop: 4 }}>
-                {t("sleptFor", fmtDuration(lastSleepMins))} · {t("wokeAgo", agoStr(lastSleep.end))}
-              </div>
-            )}
-            {!activeSleep && !lastSleep && (
-              <div style={{ fontSize: 12, color: C.muted2, marginTop: 4 }}>{t("noSleepsYet")}</div>
-            )}
-          </div>
-          {activeSleep && (
-            <button onClick={wakeUp} style={{ background: C.accent, color: "#000", border: "none", borderRadius: 12, padding: "10px 14px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: fonts.mono, letterSpacing: 0.5, whiteSpace: "nowrap", flexShrink: 0 }}>
-              {t("heWokeUp")}
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <StatTile icon="🍼" label={t("lastFeed")} value={lastFeed ? agoStr(lastFeed.at) : "—"} sub={feedLabel} />
-        <StatTile icon="👶" label={t("lastNappy")} value={lastNappy ? agoStr(lastNappy.at) : "—"}
-          sub={lastNappy ? ([lastNappy.urineLevel ? `Wet · ${lastNappy.urineLevel}` : null, lastNappy.stool ? "Soiled" : null].filter(Boolean).join(" · ") || lastNappy.type) : t("noNappiesYet")} />
-      </div>
     </>
-  );
-}
-
-function StatTile({ icon, label, value, sub }) {
-  return (
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 14 }}>
-      <div style={{ fontSize: 20, marginBottom: 8 }}>{icon}</div>
-      <div style={{ fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.5, color: C.muted, marginBottom: 3 }}>{label.toUpperCase()}</div>
-      <div style={{ fontSize: 16, fontWeight: 600 }}>{value}</div>
-      <div style={{ fontSize: 11.5, color: C.muted2, marginTop: 2 }}>{sub}</div>
-    </div>
   );
 }
 
@@ -1792,7 +2075,9 @@ function StatTile({ icon, label, value, sub }) {
 // ACTIVITY LOG — edit / soft-delete logged entries
 // ============================================================
 function ActivityLog({ feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT, tempsT, people }) {
+  const { t } = useLang();
   const [editing, setEditing] = useState(null);
+  const [expanded, setExpanded] = useState(false);
 
   const nameOf = (name) => {
     if (!name) return "—";
@@ -1834,19 +2119,27 @@ function ActivityLog({ feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT,
       label: `${t.c.toFixed(1)}°C`,
       alert: t.c >= 38,
     })),
-  ].sort((a, b) => b.at - a.at).slice(0, 25), [feeds, nappies, sleeps, temps]);
+  ].sort((a, b) => b.at - a.at).slice(0, 200), [feeds, nappies, sleeps, temps]);
+
+  const sixHoursAgo = Date.now() - 6 * 60 * 60 * 1000;
+  const recentEvents = events.filter((ev) => ev.at.getTime() >= sixHoursAgo);
+  const olderCount = events.length - recentEvents.length;
+  const visibleEvents = expanded ? events : recentEvents;
 
   if (events.length === 0) {
     return (
       <div style={{ textAlign: "center", color: C.muted2, fontSize: 13, padding: "20px 10px" }}>
-        No entries yet — use + to log a feed, nappy or sleep.
+        {t("noEntries")}
       </div>
     );
   }
 
   return (
     <>
-      {events.map((ev, i) => (
+      {visibleEvents.length === 0 && (
+        <div style={{ textAlign: "center", color: C.muted2, fontSize: 13, padding: "16px 10px" }}>{t("noEntries")}</div>
+      )}
+      {visibleEvents.map((ev, i) => (
         <button
           key={ev.id}
           onClick={() => setEditing(ev)}
@@ -1869,6 +2162,12 @@ function ActivityLog({ feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT,
           <span style={{ fontSize: 10, color: C.muted, fontFamily: fonts.mono, letterSpacing: 0.5 }}>EDIT ›</span>
         </button>
       ))}
+
+      {olderCount > 0 && (
+        <button onClick={() => setExpanded(!expanded)} style={{ width: "100%", background: "none", border: `1px solid ${C.border}`, borderRadius: 12, padding: "10px 0", color: C.muted2, fontSize: 12.5, fontFamily: fonts.mono, cursor: "pointer", marginTop: 4 }}>
+          {expanded ? t("showLess") : t("earlierEntries", olderCount)}
+        </button>
+      )}
 
       {editing && (
         <EntryEditSheet
@@ -2320,9 +2619,6 @@ function OutcomeCard({ outcome, onExit, onBack }) {
 function Protocols({ user }) {
   const [active, setActive] = useState(null);
   const [howTo, setHowTo] = useState(null);
-  const [ama, setAma] = useState(false);
-
-  if (ama) return <AMA close={() => setAma(false)} user={user} />;
 
   if (active) {
     const proto = PROTOCOLS[active];
@@ -2358,15 +2654,6 @@ function Protocols({ user }) {
           <span style={{ color: C.muted, fontSize: 18 }}>›</span>
         </button>
       ))}
-
-      <button onClick={() => setAma(true)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 14, padding: "16px", marginTop: 6, cursor: "pointer", color: C.text }}>
-        <span style={{ fontSize: 24 }}>💬</span>
-        <div style={{ textAlign: "left", flex: 1 }}>
-          <div style={{ fontSize: 15.5, fontWeight: 600 }}>Ask the SOP library</div>
-          <div style={{ fontSize: 12, color: C.muted2 }}>Describe it in your words → exact protocol</div>
-        </div>
-        <span style={{ color: C.accent, fontSize: 18 }}>›</span>
-      </button>
     </div>
   );
 }
@@ -2374,34 +2661,68 @@ function Protocols({ user }) {
 // ============================================================
 // AMA (stubbed Claude — real API in React build)
 // ============================================================
-function AMA({ close, user }) {
-  const [msgs, setMsgs] = useState([
-    { role: "assistant", text: `I've got Jacob's context — last fed 2h45m ago, you're on shift. What's going on?` },
-  ]);
+const AMA_MAX_MESSAGES = 10;
+
+function AMA({ close, user, embedded }) {
+  const { t } = useLang();
+  const [msgs, setMsgs] = useState([]);
   const [input, setInput] = useState("");
+  const [count, setCount] = useState(0);
+  const [sending, setSending] = useState(false);
   const endRef = useRef();
 
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs]);
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs, sending]);
 
-  const send = () => {
-    if (!input.trim()) return;
-    const q = input.trim();
+  const remaining = AMA_MAX_MESSAGES - count;
+  const limitReached = remaining <= 0;
+  const starters = [t("askStarter1"), t("askStarter2"), t("askStarter3"), t("askStarter4")];
+
+  const send = async (text) => {
+    const q = (text ?? input).trim();
+    if (!q || limitReached || sending || !supabase) return;
     setMsgs((m) => [...m, { role: "user", text: q }]);
     setInput("");
-    setTimeout(() => {
-      setMsgs((m) => [...m, { role: "assistant", text: stubReply(q) }]);
-    }, 600);
+    setCount((c) => c + 1);
+    setSending(true);
+    try {
+      // Standalone request — no prior messages are sent, so a long session
+      // never accumulates tokens (or cost) across turns.
+      const { data, error } = await supabase.functions.invoke("ama", { body: { message: q } });
+      if (error) throw error;
+      setMsgs((m) => [...m, { role: "assistant", text: data?.text || "Sorry, I could not get a response." }]);
+    } catch {
+      setMsgs((m) => [...m, { role: "assistant", text: "Sorry, something went wrong reaching the assistant. Please try again." }]);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
     <div style={{ animation: "fadeUp 0.25s", display: "flex", flexDirection: "column", height: "calc(100vh - 200px)" }}>
-      <button onClick={close} style={backBtn()}>← Protocols</button>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "8px 0 14px" }}>
-        <div style={{ fontFamily: fonts.display, fontSize: 24, letterSpacing: 1 }}>SOP ASSISTANT</div>
+      {!embedded && <button onClick={close} style={backBtn()}>← Back</button>}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "8px 0 10px" }}>
+        <div style={{ fontFamily: fonts.display, fontSize: 24, letterSpacing: 1 }}>ASK</div>
         <div style={{ fontSize: 9, fontFamily: fonts.mono, background: C.accentDim, color: C.accent, padding: "3px 8px", borderRadius: 12, border: `1px solid ${C.accentBorder}` }}>JACOB-AWARE</div>
       </div>
 
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "10px 14px", fontSize: 12, color: C.muted2, lineHeight: 1.5, marginBottom: 10 }}>
+        {t("askDisclaimer")}
+      </div>
+
+      <div style={{ fontFamily: fonts.mono, fontSize: 10.5, letterSpacing: 1, color: limitReached ? C.danger : C.muted2, marginBottom: 10, textAlign: "center" }}>
+        {limitReached ? t("askLimitReached") : t("askQuestionsRemaining", remaining)}
+      </div>
+
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: 10 }}>
+        {msgs.length === 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 6 }}>
+            {starters.map((s, i) => (
+              <button key={i} onClick={() => send(s)} style={{ textAlign: "left", background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "12px 14px", color: C.text, fontSize: 13.5, cursor: "pointer" }}>
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
         {msgs.map((m, i) => (
           <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start", marginBottom: 10 }}>
             <div style={{ maxWidth: "82%", background: m.role === "user" ? C.accent : C.card, color: m.role === "user" ? "#000" : C.text, border: m.role === "user" ? "none" : `1px solid ${C.border}`, borderRadius: 14, padding: "11px 14px", fontSize: 14.5, lineHeight: 1.5, fontWeight: m.role === "user" ? 500 : 400 }}>
@@ -2409,25 +2730,24 @@ function AMA({ close, user }) {
             </div>
           </div>
         ))}
+        {sending && (
+          <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 10 }}>
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "11px 14px", fontSize: 14.5, color: C.muted2 }}>…</div>
+          </div>
+        )}
         <div ref={endRef} />
       </div>
 
       <div style={{ display: "flex", gap: 8, paddingTop: 10, borderTop: `1px solid ${C.border}` }}>
-        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Describe what's happening…" style={{ flex: 1, background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "12px 14px", color: C.text, fontSize: 14.5, fontFamily: fonts.body, outline: "none" }} />
-        <button onClick={send} style={{ background: C.accent, border: "none", borderRadius: 12, padding: "0 18px", color: "#000", fontWeight: 700, cursor: "pointer", fontSize: 16 }}>↑</button>
+        <input
+          value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()}
+          placeholder={t("askPlaceholder")} disabled={limitReached}
+          style={{ flex: 1, background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "12px 14px", color: C.text, fontSize: 14.5, fontFamily: fonts.body, outline: "none", opacity: limitReached ? 0.5 : 1 }}
+        />
+        <button onClick={() => send()} disabled={limitReached || sending} style={{ background: C.accent, border: "none", borderRadius: 12, padding: "0 18px", color: "#000", fontWeight: 700, cursor: "pointer", fontSize: 16, opacity: limitReached || sending ? 0.5 : 1 }}>↑</button>
       </div>
-      <div style={{ fontSize: 10, color: C.muted, textAlign: "center", marginTop: 8, fontFamily: fonts.mono }}>DEMO REPLIES · REAL CLAUDE API IN FULL BUILD</div>
     </div>
   );
-}
-
-function stubReply(q) {
-  const l = q.toLowerCase();
-  if (l.includes("sleep") || l.includes("settle")) return "Jacob's often tired after 1–1.5 hours awake. Dark room, white noise, snug swaddle. Feed-to-sleep is fine right now — don't fight it. Want me to open the settling protocol?";
-  if (l.includes("feed") || l.includes("hungry")) return "He fed 2h45m ago, so hunger is plausible. For combo feeding, offer breast first then top up with bottle if still rooting. Track the bottle volume so we can spot a pattern.";
-  if (l.includes("cry")) return "Run the quick checklist first: hungry, wet, tired, wind, temperature. He's due a feed soon based on timing. If it's not hunger, try upright holding for wind. Calm voice — your heart rate sets his.";
-  if (l.includes("burp") || l.includes("wind")) return "Three positions work: over the shoulder, sitting upright on your lap supporting his jaw, or face-down along your forearm. A few minutes each. Not every feed brings a burp up — that's fine.";
-  return "Tell me a bit more — is this about sleep, feeding, crying, or how you're holding up? I'll point you to the exact protocol.";
 }
 
 
@@ -2534,29 +2854,66 @@ function TempChart({ temps }) {
 // ============================================================
 // LIBRARY
 // ============================================================
-function Library({ user }) {
-  const [section, setSection] = useState("guides");
-  const guides = [
-    { cat: "SLEEP", title: "Wake windows for newborns", icon: "🌙", source: "Raising Children Network" },
-    { cat: "FEEDING", title: "Combo feeding: breast + bottle without nipple confusion", icon: "🍼", source: "Australian Breastfeeding Association" },
-    { cat: "RECOVERY", title: "Supporting Jhomaira's C-section recovery: weeks 1–6", icon: "🩹", source: "The Women's / Better Health Channel" },
-    { cat: "YOUR HEAD", title: "Dad anxiety is real — and normal", icon: "🧠", source: "PANDA" },
-    { cat: "RELATIONSHIP", title: "Protecting your relationship in the newborn fog", icon: "💬", source: "Raising Children Network" },
-    { cat: "DEVELOPMENT", title: "What Jacob can do: week by week", icon: "📈", source: "Raising Children Network" },
-  ];
-
+// ============================================================
+// GUIDE TAB — merged Protocols + Library, two sub-tabs
+// ============================================================
+function Guide({ user }) {
+  const { t } = useLang();
+  const [section, setSection] = useState("protocols");
   return (
     <div style={{ animation: "fadeUp 0.3s" }}>
       <div style={{ display: "flex", gap: 8, margin: "18px 0 8px" }}>
-        {[["guides", "Guides"], ["protocols", "SOP Library"], ["ama", "AMA"]].map(([k, lbl]) => (
-          <button key={k} onClick={() => setSection(k)} style={{ flex: 1, padding: "9px 0", borderRadius: 10, border: `1px solid ${section === k ? C.accentBorder : C.border}`, background: section === k ? C.accentDim : C.card, color: section === k ? C.accent : C.muted2, fontSize: 12.5, fontWeight: 600, cursor: "pointer", fontFamily: fonts.body }}>
+        {[["protocols", t("protocols")], ["library", t("library")]].map(([k, lbl]) => (
+          <button key={k} onClick={() => setSection(k)} style={{ flex: 1, padding: "10px 0", borderRadius: 10, border: `1px solid ${section === k ? C.accentBorder : C.border}`, background: section === k ? C.accentDim : C.card, color: section === k ? C.accent : C.muted2, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: fonts.body }}>
             {lbl}
           </button>
         ))}
       </div>
+      {section === "protocols" ? <Protocols user={user} /> : <LibraryGuides />}
+    </div>
+  );
+}
 
-      {section === "guides" && guides.map((g, i) => (
-        <button key={i} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 15, marginTop: 10, cursor: "pointer", color: C.text, animation: `fadeUp 0.3s ${i * 0.04}s both` }}>
+const GUIDES = [
+  { cat: "SLEEP", title: "Wake windows for newborns", icon: "🌙", source: "Raising Children Network",
+    body: "Newborns can usually only manage 45–90 minutes awake before they're overtired. Watch for early tired cues — yawning, eye rubbing, a glazed look — and start the settle routine before he gets overstimulated. Overtired babies take longer to settle, not less." },
+  { cat: "FEEDING", title: "Combo feeding: breast + bottle without nipple confusion", icon: "🍼", source: "Australian Breastfeeding Association",
+    body: "Offer the breast first when you can, then top up with a bottle if he's still rooting or unsettled. Pace-feed the bottle — keep it near-horizontal and let him control the flow — to keep the sucking pattern similar to breastfeeding." },
+  { cat: "RECOVERY", title: "Supporting Jhomaira's C-section recovery: weeks 1–6", icon: "🩹", source: "The Women's / Better Health Channel",
+    body: "No lifting heavier than the baby for the first 6 weeks, and no driving until cleared by her provider. Watch the incision for redness, swelling or discharge. Pain that's getting worse rather than better, or a fever, means calling the provider — don't wait it out." },
+  { cat: "YOUR HEAD", title: "Dad anxiety is real — and normal", icon: "🧠", source: "PANDA",
+    body: "Up to 1 in 10 new dads experience postnatal anxiety or depression. Racing thoughts, irritability, or feeling numb are common signs — not a character flaw. PANDA's helpline (1300 726 306) is there for exactly this, day or night." },
+  { cat: "RELATIONSHIP", title: "Protecting your relationship in the newborn fog", icon: "💬", source: "Raising Children Network",
+    body: "Sleep deprivation shortens everyone's fuse. A 20-second hug releases oxytocin and measurably lowers stress — it sounds small, but it works. Say the logistics out loud instead of assuming the other person already knows the plan." },
+  { cat: "DEVELOPMENT", title: "What Jacob can do: week by week", icon: "📈", source: "Raising Children Network",
+    body: "By 2–4 weeks: tracking faces, startling at loud noises, beginning to lift his head briefly during tummy time. Every baby's timeline varies — these are guides, not deadlines. Bring concerns to your child health nurse, not a percentile chart." },
+];
+
+function LibraryGuides() {
+  const [openIdx, setOpenIdx] = useState(null);
+
+  if (openIdx != null) {
+    const g = GUIDES[openIdx];
+    return (
+      <div style={{ animation: "fadeUp 0.25s", marginTop: 12 }}>
+        <button onClick={() => setOpenIdx(null)} style={backBtn()}>← All guides</button>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "10px 0 10px" }}>
+          <div style={{ fontSize: 28 }}>{g.icon}</div>
+          <div>
+            <div style={{ fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1.5, color: C.accent, marginBottom: 3 }}>{g.cat}</div>
+            <div style={{ fontFamily: fonts.display, fontSize: 22, letterSpacing: 0.5, lineHeight: 1.15 }}>{g.title}</div>
+          </div>
+        </div>
+        <div style={{ fontSize: 14.5, lineHeight: 1.6, color: C.text, marginBottom: 14 }}>{g.body}</div>
+        {g.source && <div style={{ fontFamily: fonts.mono, fontSize: 9.5, color: C.muted }}>SOURCE: {g.source.toUpperCase()}</div>}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginTop: 2 }}>
+      {GUIDES.map((g, i) => (
+        <button key={i} onClick={() => setOpenIdx(i)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 15, marginTop: 10, cursor: "pointer", color: C.text, animation: `fadeUp 0.3s ${i * 0.04}s both` }}>
           <span style={{ fontSize: 22 }}>{g.icon}</span>
           <div style={{ textAlign: "left", flex: 1 }}>
             <div style={{ fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1.5, color: C.accent, marginBottom: 4 }}>{g.cat}</div>
@@ -2566,34 +2923,6 @@ function Library({ user }) {
           <span style={{ color: C.muted, fontSize: 18 }}>›</span>
         </button>
       ))}
-
-      {section === "protocols" && (
-        <div style={{ marginTop: 12 }}>
-          <input placeholder="Search by problem — e.g. 'won't burp'" style={{ width: "100%", background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "12px 14px", color: C.text, fontSize: 14, fontFamily: fonts.body, outline: "none", marginBottom: 12 }} />
-          <div style={{ fontSize: 12.5, color: C.muted2, lineHeight: 1.6, textAlign: "center", padding: "30px 20px" }}>
-            47 individually sourced SOPs live here.<br />
-            <span style={{ color: C.muted }}>Searchable by problem, not category. We'll generate these together using Claude in the next phase.</span>
-          </div>
-        </div>
-      )}
-
-      {section === "ama" && (
-        <div style={{ marginTop: 12 }}>
-          <AMAInline user={user} />
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AMAInline({ user }) {
-  return (
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 20, textAlign: "center" }}>
-      <div style={{ fontSize: 30, marginBottom: 10 }}>💬</div>
-      <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 6 }}>Ask Me Anything</div>
-      <div style={{ fontSize: 13, color: C.muted2, lineHeight: 1.5 }}>
-        Context-aware Claude that knows Jacob's age, feeding method, last feed and your current shift. Locked to newborn care, feeding, sleep, recovery and your wellbeing. Live in the full build.
-      </div>
     </div>
   );
 }
@@ -2601,9 +2930,8 @@ function AMAInline({ user }) {
 // ============================================================
 // QUICK LOG FAB
 // ============================================================
-function QuickLogFab({ open, setOpen, addFeed, addNappy, addSleep, addTemp, liveStatus, setActivity }) {
+function QuickLogFab({ open, setOpen, view, setView, addFeed, addNappy, addSleep, addTemp, liveStatus, setActivity, uploadPhoto, currentUser }) {
   const { t } = useLang();
-  const [view, setView] = useState(null);
   const [toast, setToast] = useState(null);
 
   const flash = (msg) => { setToast(msg); setTimeout(() => setToast(null), 1800); };
@@ -2643,10 +2971,14 @@ function QuickLogFab({ open, setOpen, addFeed, addNappy, addSleep, addTemp, live
             )}
 
             {view === "feed" && (
-              <FeedLog liveStatus={liveStatus} onSave={(f) => { addFeed(f); if (isFeedingNow) setActivity("idle"); flash(t("feedLogged")); close(); }} back={() => setView(null)} />
+              <FeedLog liveStatus={liveStatus} setActivity={setActivity} onSave={(f) => { addFeed(f); if (isFeedingNow || liveStatus?.status === "feeding") setActivity("idle"); flash(t("feedLogged")); close(); }} back={() => setView(null)} />
             )}
             {view === "nappy" && (
-              <NappyLog onSave={(n) => { addNappy(n); flash(t("nappyLogged")); close(); }} back={() => setView(null)} />
+              <NappyLog
+                uploadPhoto={uploadPhoto} currentUser={currentUser}
+                onSave={async (n) => { const created = await addNappy(n); flash(t("nappyLogged")); close(); return created; }}
+                back={() => setView(null)}
+              />
             )}
             {view === "sleep" && (
               <div>
@@ -2691,87 +3023,127 @@ function TempLog({ onSave, back }) {
   );
 }
 
-function FeedLog({ onSave, back, liveStatus }) {
+function StartedAtField({ value, onChange }) {
   const { t } = useLang();
-  const timerMins = liveStatus?.status === "feeding" && liveStatus?.started_at
-    ? Math.floor((new Date() - new Date(liveStatus.started_at)) / 60000)
-    : null;
-
-  const [side, setSide] = useState("L");
-  const [breastDuration, setBreastDuration] = useState(timerMins !== null ? String(timerMins) : "");
-  const [breastOn, setBreastOn] = useState(timerMins !== null);
-  const [bottleVol, setBottleVol] = useState(60);
-  const [bottleOn, setBottleOn] = useState(false);
-
-  const save = () => {
-    const bd = breastOn && breastDuration ? parseInt(breastDuration, 10) : null;
-    const bv = bottleOn ? bottleVol : null;
-    if (!bd && !bv) return;
-    onSave({ breastDurationMins: bd, side: breastOn ? side : null, bottleVolMl: bv });
-  };
-
   return (
-    <div>
-      <SheetTitle back={back}>{t("feed")}</SheetTitle>
-      {timerMins !== null && (
-        <div style={{ background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 12, padding: "10px 14px", marginBottom: 14, fontSize: 13, color: C.accent, fontFamily: fonts.mono }}>
-          ▶ {t("durationFromTimer")}: {timerMins}min
-        </div>
-      )}
-      <div style={{ fontSize: 12, color: C.muted2, marginBottom: 14 }}>{t("feedComboNote")}</div>
-
-      {/* BREAST section */}
-      <div style={{ background: C.card, border: `1px solid ${breastOn ? C.accentBorder : C.border}`, borderRadius: 14, padding: 14, marginBottom: 10 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: breastOn ? 12 : 0 }}>
-          <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: breastOn ? C.accent : C.muted }}>{t("breastSection")}</div>
-          <button onClick={() => setBreastOn(!breastOn)} style={{ background: breastOn ? C.accent : C.surface, border: `1px solid ${breastOn ? C.accent : C.border}`, borderRadius: 20, padding: "4px 14px", color: breastOn ? "#000" : C.muted, fontSize: 11, fontFamily: fonts.mono, cursor: "pointer" }}>
-            {breastOn ? "ON" : "OFF"}
-          </button>
-        </div>
-        {breastOn && (
-          <>
-            <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-              {["L", "R", "Both"].map((s) => (
-                <button key={s} onClick={() => setSide(s)} style={{ ...logChoice(), background: side === s ? C.accentDim : C.card, borderColor: side === s ? C.accentBorder : C.border, color: side === s ? C.accent : C.text }}>{s}</button>
-              ))}
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.5, color: C.muted, whiteSpace: "nowrap" }}>{t("durationMin")}</div>
-              <input type="number" min="0" max="60" value={breastDuration} onChange={(e) => setBreastDuration(e.target.value)} placeholder="—"
-                style={{ flex: 1, background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: "9px 12px", color: C.text, fontSize: 15, fontFamily: fonts.mono, outline: "none", width: 70 }} />
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* BOTTLE section */}
-      <div style={{ background: C.card, border: `1px solid ${bottleOn ? C.accentBorder : C.border}`, borderRadius: 14, padding: 14, marginBottom: 18 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: bottleOn ? 12 : 0 }}>
-          <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: bottleOn ? C.accent : C.muted }}>{t("bottleSection")}</div>
-          <button onClick={() => setBottleOn(!bottleOn)} style={{ background: bottleOn ? C.accent : C.surface, border: `1px solid ${bottleOn ? C.accent : C.border}`, borderRadius: 20, padding: "4px 14px", color: bottleOn ? "#000" : C.muted, fontSize: 11, fontFamily: fonts.mono, cursor: "pointer" }}>
-            {bottleOn ? "ON" : "OFF"}
-          </button>
-        </div>
-        {bottleOn && (
-          <>
-            <div style={{ textAlign: "center", fontFamily: fonts.display, fontSize: 36, color: C.accent, marginBottom: 6 }}>{bottleVol}<span style={{ fontSize: 16, color: C.muted2 }}>ml</span></div>
-            <input type="range" min="10" max="200" step="5" value={bottleVol} onChange={(e) => setBottleVol(+e.target.value)} style={{ width: "100%", accentColor: C.accent }} />
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.muted, fontFamily: fonts.mono, marginTop: 4 }}>
-              <span>10ml</span><span>200ml</span>
-            </div>
-          </>
-        )}
-      </div>
-
-      <button onClick={save} disabled={!breastOn && !bottleOn} style={{ ...bigBtn(), marginTop: 0, opacity: (breastOn || bottleOn) ? 1 : 0.4 }}>{t("saveFeed")}</button>
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.5, color: C.muted, marginBottom: 6 }}>{t("startedAt").toUpperCase()}</div>
+      <input type="time" value={value} onChange={onChange}
+        style={{ width: "100%", background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "11px 13px", color: C.text, fontSize: 15, fontFamily: fonts.mono, outline: "none", textAlign: "center" }} />
     </div>
   );
 }
 
-function NappyLog({ onSave, back }) {
+function FeedLog({ onSave, back, liveStatus, setActivity }) {
+  const { t } = useLang();
+  const isFeeding = liveStatus?.status === "feeding";
+
+  const [mode, setMode] = useState(isFeeding ? "breast" : null);
+  const [side, setSide] = useState("L");
+  const [topUpOn, setTopUpOn] = useState(false);
+  const [topUpVol, setTopUpVol] = useState(60);
+  const [bottleVol, setBottleVol] = useState(60);
+  const [startedAt, setStartedAt] = useState(liveStatus?.started_at ? new Date(liveStatus.started_at) : new Date());
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    if (mode !== "breast") return;
+    const id = setInterval(() => setTick((x) => x + 1), 1000);
+    return () => clearInterval(id);
+  }, [mode]);
+
+  const elapsedSec = mode === "breast" ? Math.max(0, Math.floor((Date.now() - startedAt.getTime()) / 1000)) : 0;
+  const mm = String(Math.floor(elapsedSec / 60)).padStart(2, "0");
+  const ss = String(elapsedSec % 60).padStart(2, "0");
+
+  const timeStr = `${String(startedAt.getHours()).padStart(2, "0")}:${String(startedAt.getMinutes()).padStart(2, "0")}`;
+  const setTimeFromInput = (e) => {
+    const [h, m] = e.target.value.split(":").map(Number);
+    const d = new Date(startedAt);
+    d.setHours(h, m, 0, 0);
+    setStartedAt(d);
+  };
+
+  const startBreast = async () => {
+    const nowTs = new Date();
+    setStartedAt(nowTs);
+    setMode("breast");
+    if (setActivity) await setActivity("feeding", "breast");
+  };
+
+  const switchSide = () => setSide((s) => (s === "L" ? "R" : "L"));
+
+  const finish = () => {
+    const mins = Math.max(1, Math.round(elapsedSec / 60));
+    onSave({ breastDurationMins: mins, side, bottleVolMl: topUpOn ? topUpVol : null, at: startedAt });
+  };
+
+  const saveBottle = () => {
+    onSave({ bottleVolMl: bottleVol, at: startedAt });
+  };
+
+  if (!mode) {
+    return (
+      <div>
+        <SheetTitle back={back}>{t("feed")}</SheetTitle>
+        <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
+          <button onClick={startBreast} style={{ flex: 1, aspectRatio: "1", borderRadius: 18, border: `1px solid ${C.border}`, background: C.card, color: C.text, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, cursor: "pointer" }}>
+            <span style={{ fontSize: 40 }}>🤱</span>
+            <span style={{ fontFamily: fonts.mono, fontSize: 13, letterSpacing: 1.5, fontWeight: 700 }}>{t("breast").toUpperCase()}</span>
+          </button>
+          <button onClick={() => setMode("bottle")} style={{ flex: 1, aspectRatio: "1", borderRadius: 18, border: `1px solid ${C.border}`, background: C.card, color: C.text, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, cursor: "pointer" }}>
+            <span style={{ fontSize: 40 }}>🍼</span>
+            <span style={{ fontFamily: fonts.mono, fontSize: 13, letterSpacing: 1.5, fontWeight: 700 }}>{t("bottle").toUpperCase()}</span>
+          </button>
+        </div>
+        <StartedAtField value={timeStr} onChange={setTimeFromInput} />
+      </div>
+    );
+  }
+
+  if (mode === "breast") {
+    return (
+      <div>
+        <SheetTitle back={back}>{t("breast")}</SheetTitle>
+        <div style={{ textAlign: "center", marginBottom: 16 }}>
+          <div style={{ fontFamily: fonts.display, fontSize: 56, color: C.accent, letterSpacing: 1 }}>{mm}:{ss}</div>
+          <div style={{ fontFamily: fonts.mono, fontSize: 11, color: C.muted2, letterSpacing: 1.5, marginTop: 4 }}>{t("breastSection")} · {side}</div>
+        </div>
+        <button onClick={switchSide} style={{ ...logChoice(), width: "100%", marginBottom: 10 }}>{t("changeSide")} ({side === "L" ? "L→R" : "R→L"})</button>
+        <button onClick={() => setTopUpOn(!topUpOn)} style={{ ...logChoice(), width: "100%", marginBottom: topUpOn ? 10 : 16, background: topUpOn ? C.accentDim : C.card, borderColor: topUpOn ? C.accentBorder : C.border, color: topUpOn ? C.accent : C.text }}>
+          {topUpOn ? "✓ " : "+ "}{t("addBottleTopUp")}
+        </button>
+        {topUpOn && (
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ textAlign: "center", fontFamily: fonts.display, fontSize: 30, color: C.accent, marginBottom: 6 }}>{topUpVol}<span style={{ fontSize: 14, color: C.muted2 }}>ml</span></div>
+            <input type="range" min="10" max="200" step="5" value={topUpVol} onChange={(e) => setTopUpVol(+e.target.value)} style={{ width: "100%", accentColor: C.accent }} />
+          </div>
+        )}
+        <StartedAtField value={timeStr} onChange={setTimeFromInput} />
+        <button onClick={finish} style={bigBtn()}>{t("finishFeeding")}</button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <SheetTitle back={back}>{t("bottle")}</SheetTitle>
+      <div style={{ textAlign: "center", fontFamily: fonts.display, fontSize: 44, color: C.accent, marginBottom: 8 }}>{bottleVol}<span style={{ fontSize: 18, color: C.muted2 }}>ml</span></div>
+      <input type="range" min="10" max="200" step="5" value={bottleVol} onChange={(e) => setBottleVol(+e.target.value)} style={{ width: "100%", accentColor: C.accent, marginBottom: 18 }} />
+      <StartedAtField value={timeStr} onChange={setTimeFromInput} />
+      <button onClick={saveBottle} style={bigBtn()}>{t("saveFeed")}</button>
+    </div>
+  );
+}
+
+function NappyLog({ onSave, back, uploadPhoto, currentUser }) {
   const { t } = useLang();
   const [urineLevel, setUrineLevel] = useState(null);
   const [stool, setStool] = useState(false);
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const fileRef = useRef();
 
   const urineLevels = [
     ["none", t("nappyNone")],
@@ -2780,9 +3152,21 @@ function NappyLog({ onSave, back }) {
     ["heavy", t("nappyHeavy")],
   ];
 
-  const save = () => {
+  const pickPhoto = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
+
+  const save = async () => {
     const ul = urineLevel === "none" ? null : urineLevel;
-    onSave({ urineLevel: ul, stool });
+    setSaving(true);
+    const created = await onSave({ urineLevel: ul, stool });
+    if (photoFile && created?.id && uploadPhoto) {
+      await uploadPhoto(photoFile, null, currentUser, created.id);
+    }
+    setSaving(false);
   };
 
   const label = [
@@ -2818,9 +3202,19 @@ function NappyLog({ onSave, back }) {
         {label}
       </div>
 
-      <button onClick={save} disabled={!urineLevel && !stool}
-        style={{ ...bigBtn(), marginTop: 0, opacity: (urineLevel || stool) ? 1 : 0.4 }}>
-        {t("nappyLogged")}
+      {uploadPhoto && (
+        <>
+          <input ref={fileRef} type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={pickPhoto} />
+          <button onClick={() => fileRef.current?.click()} style={{ ...logChoice(), width: "100%", marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, borderColor: photoPreview ? C.accentBorder : C.border }}>
+            {photoPreview ? <img src={photoPreview} alt="" style={{ width: 26, height: 26, borderRadius: 6, objectFit: "cover" }} /> : null}
+            {photoPreview ? t("addPhotoOptional").replace("📷 ", "✓ ") : t("addPhotoOptional")}
+          </button>
+        </>
+      )}
+
+      <button onClick={save} disabled={(!urineLevel && !stool) || saving}
+        style={{ ...bigBtn(), marginTop: 0, opacity: (urineLevel || stool) && !saving ? 1 : 0.4 }}>
+        {saving ? t("uploadingPhoto") : t("nappyLogged")}
       </button>
     </div>
   );
@@ -3023,6 +3417,80 @@ function useRoutineConfig() {
 function nextFeedDue(lastFeed, config) {
   if (!lastFeed) return null;
   return new Date(lastFeed.at.getTime() + (config.feedIntervalMins || ROUTINE_DEFAULTS.feedIntervalMins) * 60000);
+}
+
+// ---- Formula guide (Step 2/4) — 50ml water = 1 scoop = 7.5g powder ----
+function formulaRecommendation(awakeMins) {
+  if (awakeMins == null) return null;
+  if (awakeMins < 180) return { ml: 60, label: "<60ml" };
+  if (awakeMins <= 240) return { ml: 65, label: "65ml" };
+  return { ml: 80, label: "~80ml" };
+}
+function mlToScoops(ml) {
+  return Math.round((ml / 50) * 4) / 4;
+}
+function formatScoops(scoops) {
+  const rounded = Math.round(scoops * 4) / 4;
+  const whole = Math.floor(rounded + 1e-9);
+  const frac = Math.round((rounded - whole) * 4) / 4;
+  const fracMap = { 0: "", 0.25: "¼", 0.5: "½", 0.75: "¾" };
+  const fracStr = fracMap[frac] ?? "";
+  if (whole === 0 && fracStr) return fracStr;
+  return `${whole}${fracStr}`;
+}
+
+function FormulaCalculatorModal({ close, awakeMins, saveTarget }) {
+  const { t } = useLang();
+  const rec = formulaRecommendation(awakeMins);
+  const [ml, setMl] = useState(rec ? rec.ml : 60);
+  const [saved, setSaved] = useState(false);
+  const scoops = mlToScoops(ml);
+  const scoopsRounded = Math.round(scoops);
+  const grams = Math.round(scoops * 7.5 * 10) / 10;
+  const scoopsStr = formatScoops(scoops);
+  const unit = t("scoopUnit", scoopsRounded);
+
+  const setFromScoops = (s) => setMl(Math.round(s * 50));
+
+  const save = async () => {
+    await saveTarget(ml);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1800);
+  };
+
+  return (
+    <div onClick={close} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)", zIndex: 400, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: C.surface, borderRadius: "22px 22px 0 0", padding: "20px 20px 28px", width: "100%", maxWidth: 480, borderTop: `1px solid ${C.border}`, animation: "slideIn 0.25s", maxHeight: "88vh", overflowY: "auto" }}>
+        <div style={{ width: 40, height: 4, background: C.cardHi, borderRadius: 2, margin: "0 auto 18px" }} />
+        <SheetTitle back={close}>{t("formulaGuide")}</SheetTitle>
+
+        {rec != null && (
+          <div style={{ background: C.accentDim, border: `1px solid ${C.accentBorder}`, borderRadius: 12, padding: "12px 14px", marginBottom: 18, fontSize: 13.5, lineHeight: 1.5 }}>
+            {t("awakeSince", fmtDuration(awakeMins))} — {t("recommendedAmount", rec.label)}
+          </div>
+        )}
+
+        <div style={{ textAlign: "center", marginBottom: 18 }}>
+          <div style={{ fontFamily: fonts.display, fontSize: 64, color: C.accent, lineHeight: 1 }}>{scoopsStr}</div>
+          <div style={{ fontFamily: fonts.mono, fontSize: 12, letterSpacing: 1.5, color: C.muted2, marginTop: 6 }}>{unit} · {grams}g</div>
+        </div>
+
+        <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: C.muted, marginBottom: 8 }}>{t("waterLabel").toUpperCase()}</div>
+        <div style={{ textAlign: "center", fontSize: 14.5, marginBottom: 8 }}>
+          <b>{ml} ml</b> {t("waterLabel").toLowerCase()} + <b>{scoopsStr} {unit}</b> ({grams}g) {t("powderLabel").toLowerCase()}
+        </div>
+        <input type="range" min="30" max="150" step="5" value={ml} onChange={(e) => setMl(+e.target.value)} style={{ width: "100%", accentColor: C.accent, marginBottom: 20 }} />
+
+        <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: C.muted, marginBottom: 8 }}>{t("powderLabel").toUpperCase()}</div>
+        <div style={{ textAlign: "center", fontSize: 14.5, marginBottom: 8 }}>
+          <b>{scoopsStr} {unit}</b> ({grams}g) {t("powderLabel").toLowerCase()} → <b>{ml} ml</b> {t("waterLabel").toLowerCase()}
+        </div>
+        <input type="range" min="0.5" max="4" step="0.25" value={scoops} onChange={(e) => setFromScoops(+e.target.value)} style={{ width: "100%", accentColor: C.accent, marginBottom: 20 }} />
+
+        <button onClick={save} style={bigBtn()}>{saved ? `✓ ${t("targetSaved")}` : t("saveAsTarget")}</button>
+      </div>
+    </div>
+  );
 }
 
 function Stepper({ label, value, onChange, min, max, step, fmt }) {
@@ -3235,14 +3703,14 @@ function usePhotos() {
     return () => supabase.removeChannel(ch);
   }, []);
 
-  const uploadPhoto = async (file, caption, uploadedBy) => {
+  const uploadPhoto = async (file, caption, uploadedBy, nappyId) => {
     if (!supabase) return;
     const compressed = await compressImage(file);
     const ext = "jpg";
     const path = `photos/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
     const { error: upErr } = await supabase.storage.from("photos").upload(path, compressed, { contentType: "image/jpeg" });
     if (upErr) { console.error("upload error", upErr); return null; }
-    const { data } = await supabase.from("photos").insert({ storage_path: path, caption: caption || null, uploaded_by: uploadedBy || null }).select().single();
+    const { data } = await supabase.from("photos").insert({ storage_path: path, caption: caption || null, uploaded_by: uploadedBy || null, nappy_id: nappyId || null }).select().single();
     return data;
   };
 
@@ -3335,22 +3803,21 @@ function Gallery({ photos, uploadPhoto, deletePhoto, getUrl, currentUser }) {
 // ============================================================
 // MORE SHEET
 // ============================================================
-function MoreSheet({ close, open }) {
+function SettingsMenu({ close, open }) {
   const { t } = useLang();
   const items = [
-    { k: "daily3", icon: "🎯", label: "Daily 3", sub: "Today's three anchors" },
+    { k: "settings", icon: "⚙️", label: "Settings", sub: "People, baby, preferences" },
     { k: "log", icon: "📓", label: "Daily Log", sub: "Private — how are you doing?" },
     { k: "milestones", icon: "🌱", label: "Milestones", sub: "Jacob's growth & firsts" },
     { k: "metrics", icon: "📏", label: "Baby Metrics", sub: "Weight, length & head circ." },
-    { k: "gallery", icon: "📷", label: "Gallery", sub: "Photos of Jacob" },
+    { k: "daily3", icon: "🎯", label: "Daily 3", sub: "Today's three anchors" },
     { k: "routine", icon: "⏱️", label: t("routineMenuLabel"), sub: t("routineMenuSub") },
-    { k: "settings", icon: "⚙️", label: "Settings", sub: "People, baby, preferences" },
   ];
   return (
     <div onClick={close} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 250, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
       <div onClick={(e) => e.stopPropagation()} style={{ background: C.surface, borderRadius: "22px 22px 0 0", padding: 20, width: "100%", maxWidth: 480, borderTop: `1px solid ${C.border}`, animation: "slideIn 0.25s" }}>
         <div style={{ width: 40, height: 4, background: C.cardHi, borderRadius: 2, margin: "0 auto 18px" }} />
-        <div style={{ fontFamily: fonts.display, fontSize: 22, letterSpacing: 1, marginBottom: 16 }}>MORE</div>
+        <div style={{ fontFamily: fonts.display, fontSize: 22, letterSpacing: 1, marginBottom: 16 }}>SETTINGS</div>
         {items.map((it) => (
           <button key={it.k} onClick={() => open(it.k)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 15, marginBottom: 10, cursor: "pointer", color: C.text }}>
             <span style={{ fontSize: 24 }}>{it.icon}</span>
@@ -3369,7 +3836,7 @@ function MoreSheet({ close, open }) {
 // ============================================================
 // MORE SCREENS
 // ============================================================
-function MoreScreen({ screen, close, user, dailyLogs, addDailyLog, people, addPerson, toggleActive, metrics, addMetric, deleteMetric, photos, uploadPhoto, deletePhoto, getUrl, routineConfig, saveRoutineConfig, clearOldHolderLog }) {
+function MoreScreen({ screen, close, user, dailyLogs, addDailyLog, people, addPerson, toggleActive, metrics, addMetric, deleteMetric, routineConfig, saveRoutineConfig, clearOldHolderLog }) {
   return (
     <div style={{ position: "fixed", inset: 0, background: C.bg, zIndex: 280, maxWidth: 480, margin: "0 auto", overflowY: "auto", animation: "fadeUp 0.2s" }}>
       <div style={{ padding: "16px 16px 100px" }}>
@@ -3378,7 +3845,6 @@ function MoreScreen({ screen, close, user, dailyLogs, addDailyLog, people, addPe
         {screen === "log" && <DailyLog user={user} entries={dailyLogs[user.name] || []} addEntry={(e) => addDailyLog(user.name, e)} />}
         {screen === "milestones" && <Milestones />}
         {screen === "metrics" && <BabyMetrics metrics={metrics || []} addMetric={addMetric} deleteMetric={deleteMetric} />}
-        {screen === "gallery" && <Gallery photos={photos || []} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} getUrl={getUrl} currentUser={user?.name} />}
         {screen === "routine" && <RoutineSettings config={routineConfig} saveConfig={saveRoutineConfig} />}
         {screen === "settings" && <Settings people={people} addPerson={addPerson} toggleActive={toggleActive} clearOldHolderLog={clearOldHolderLog} />}
       </div>
@@ -3537,22 +4003,158 @@ const MILESTONE_CATEGORIES = [
   { k: "sleep", label: "Sleep", icon: "😴" },
 ];
 
+// ---- Recommended achievement milestones (pre-loaded, not from Supabase) ----
+const RECOMMENDED_MILESTONES = [
+  { period: "Week 1–2", items: [
+    { key: "first-smile-reflexive", icon: "🥇", title: "First smile (reflexive)" },
+    { key: "back-to-birth-weight", icon: "🍼", title: "Back to birth weight" },
+    { key: "first-3hr-sleep", icon: "😴", title: "First 3-hour sleep stretch" },
+    { key: "tracks-a-face", icon: "👁️", title: "Tracks a face with eyes" },
+  ] },
+  { period: "Week 3–4", items: [
+    { key: "first-social-smile", icon: "😊", title: "First social smile" },
+    { key: "first-coo", icon: "🗣️", title: "First coo or vocalization" },
+    { key: "holds-head-tummy-time", icon: "💪", title: "Holds head up briefly (tummy time)" },
+    { key: "first-4hr-sleep", icon: "🌙", title: "First 4-hour sleep stretch" },
+  ] },
+  { period: "Month 2", items: [
+    { key: "recognises-voices", icon: "👋", title: "Recognises parents' voices" },
+    { key: "follows-object", icon: "🎯", title: "Follows moving object with eyes" },
+    { key: "laughs", icon: "😄", title: "Laughs or chuckles" },
+    { key: "head-45-tummy-time", icon: "💪", title: "Holds head at 45° during tummy time" },
+  ] },
+];
+
+function Confetti() {
+  const colors = ["#4ade9a", "#60a5fa", "#c084fc", "#f97316", "#f43f5e", "#facc15"];
+  const pieces = useMemo(() => Array.from({ length: 18 }, (_, i) => ({
+    id: i,
+    color: colors[i % colors.length],
+    left: 10 + Math.random() * 80,
+    delay: Math.random() * 0.12,
+    duration: 0.7 + Math.random() * 0.5,
+    cx: `${(Math.random() - 0.5) * 140}px`,
+    cy: `${-40 - Math.random() * 70}px`,
+    cr: `${Math.random() * 360}deg`,
+  })), []);
+  return (
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", borderRadius: 14 }}>
+      {pieces.map((p) => (
+        <div key={p.id} style={{
+          position: "absolute", top: "45%", left: `${p.left}%`, width: 6, height: 10, background: p.color, borderRadius: 1,
+          animation: `confettiBurst ${p.duration}s ease-out ${p.delay}s forwards`,
+          "--cx": p.cx, "--cy": p.cy, "--cr": p.cr,
+        }} />
+      ))}
+    </div>
+  );
+}
+
+function AchievementModal({ item, close, onConfirm }) {
+  const { t } = useLang();
+  const [date, setDate] = useState(localDateStr(now()));
+  const [comment, setComment] = useState("");
+  return (
+    <div onClick={close} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)", zIndex: 400, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: C.surface, borderRadius: "22px 22px 0 0", padding: "20px 20px 28px", width: "100%", maxWidth: 480, borderTop: `1px solid ${C.border}`, animation: "slideIn 0.25s" }}>
+        <div style={{ width: 40, height: 4, background: C.cardHi, borderRadius: 2, margin: "0 auto 18px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
+          <span style={{ fontSize: 34 }}>{item.icon}</span>
+          <div style={{ fontFamily: fonts.display, fontSize: 20, letterSpacing: 0.5, lineHeight: 1.2 }}>{item.title}</div>
+        </div>
+        <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.5, color: C.muted, marginBottom: 8 }}>{t("milestoneWhenHappened").toUpperCase()}</div>
+        <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
+          style={{ width: "100%", background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "11px 13px", color: C.text, fontSize: 14, fontFamily: fonts.mono, outline: "none", marginBottom: 14, colorScheme: "dark" }} />
+        <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.5, color: C.muted, marginBottom: 8 }}>{t("milestoneTellUs").toUpperCase()}</div>
+        <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} style={{ ...ta(), marginBottom: 16 }} />
+        <button onClick={() => onConfirm({ date, comment })} style={bigBtn()}>{t("milestoneConfirm")}</button>
+      </div>
+    </div>
+  );
+}
+
+function AchievementCard({ item, achieved, justUnlocked, onOpen }) {
+  const { t } = useLang();
+  return (
+    <button onClick={onOpen} style={{
+      position: "relative", width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", cursor: "pointer",
+      background: achieved ? C.goldDim : C.card,
+      border: `1px solid ${achieved ? C.goldBorder : C.border}`,
+      borderRadius: 14, padding: 15, marginBottom: 10,
+    }}>
+      {justUnlocked && <Confetti />}
+      <span style={{ fontSize: 26, filter: achieved ? "none" : "grayscale(1) opacity(0.35)" }}>{achieved ? "🏆" : "🔒"}</span>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 14.5, fontWeight: 600, color: achieved ? C.gold : C.muted2 }}>{item.icon} {item.title}</div>
+        {achieved ? (
+          <div style={{ fontSize: 12, color: C.muted2, marginTop: 3 }}>
+            ✓ {t("milestoneAchieved")} · {achieved.achievementDate}
+            {achieved.achievementComment ? ` — ${achieved.achievementComment}` : ""}
+          </div>
+        ) : (
+          <div style={{ fontFamily: fonts.mono, fontSize: 10, color: C.muted, marginTop: 3, letterSpacing: 1 }}>{t("milestoneLocked").toUpperCase()}</div>
+        )}
+      </div>
+    </button>
+  );
+}
+
 function Milestones() {
+  const { t } = useLang();
   const milestonesT = useLiveTable("milestones", {
-    mapRow: (r) => ({ id: r.id, cat: r.category, title: r.title, notes: r.notes, date: r.date_label }),
+    mapRow: (r) => ({
+      id: r.id, cat: r.category, title: r.title, notes: r.notes, date: r.date_label,
+      isRecommended: !!r.is_recommended, achievementKey: r.achievement_key,
+      achievementDate: r.achievement_date, achievementComment: r.achievement_comment,
+    }),
   });
   const items = milestonesT.rows;
   const [adding, setAdding] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [openItem, setOpenItem] = useState(null);
+  const [justUnlockedKey, setJustUnlockedKey] = useState(null);
 
-  const add = (m) => { milestonesT.add({ category: m.cat, title: m.title, notes: m.notes, date_label: m.date }); setAdding(false); };
-  const shown = filter === "all" ? items : items.filter((i) => i.cat === filter);
+  const achievedByKey = useMemo(() => {
+    const map = {};
+    items.filter((i) => i.isRecommended && i.achievementKey).forEach((i) => { map[i.achievementKey] = i; });
+    return map;
+  }, [items]);
+
+  const unlock = async ({ date, comment }) => {
+    await milestonesT.add({
+      category: null, title: openItem.title, notes: null, date_label: date,
+      is_recommended: true, achievement_key: openItem.key, achievement_date: date, achievement_comment: comment || null,
+    });
+    setJustUnlockedKey(openItem.key);
+    setOpenItem(null);
+    setTimeout(() => setJustUnlockedKey(null), 1400);
+  };
+
+  const custom = items.filter((i) => !i.isRecommended);
+  const add = (m) => { milestonesT.add({ category: m.cat, title: m.title, notes: m.notes, date_label: m.date, is_recommended: false }); setAdding(false); };
+  const shown = filter === "all" ? custom : custom.filter((i) => i.cat === filter);
 
   return (
     <div>
       <div style={{ fontFamily: fonts.display, fontSize: 28, letterSpacing: 1, margin: "10px 0 4px" }}>MILESTONES</div>
-      <div style={{ color: C.muted2, fontSize: 13.5, marginBottom: 16 }}>Jacob's firsts — physical, social, feeding, sleep.</div>
+      <div style={{ color: C.muted2, fontSize: 13.5, marginBottom: 18 }}>Jacob's firsts — physical, social, feeding, sleep.</div>
 
+      {RECOMMENDED_MILESTONES.map((group) => (
+        <div key={group.period}>
+          <Label>{group.period.toUpperCase()}</Label>
+          {group.items.map((item) => (
+            <AchievementCard
+              key={item.key}
+              item={item}
+              achieved={achievedByKey[item.key] || null}
+              justUnlocked={justUnlockedKey === item.key}
+              onOpen={() => { if (!achievedByKey[item.key]) setOpenItem(item); }}
+            />
+          ))}
+        </div>
+      ))}
+
+      <Label>{t("milestonesYourMilestones")}</Label>
       <div style={{ display: "flex", gap: 7, flexWrap: "wrap", marginBottom: 14 }}>
         <button onClick={() => setFilter("all")} style={{ padding: "8px 13px", borderRadius: 20, border: `1px solid ${filter === "all" ? C.accentBorder : C.border}`, background: filter === "all" ? C.accentDim : C.card, color: filter === "all" ? C.accent : C.muted2, fontSize: 12.5, cursor: "pointer" }}>All</button>
         {MILESTONE_CATEGORIES.map((c) => (
@@ -3560,7 +4162,7 @@ function Milestones() {
         ))}
       </div>
 
-      <button onClick={() => setAdding(true)} style={{ ...bigBtn(), marginBottom: 18 }}>+ Add a milestone</button>
+      <button onClick={() => setAdding(true)} style={{ ...bigBtn(), marginBottom: 18 }}>{t("milestonesAddOwn")}</button>
 
       {adding && <AddMilestone onSave={add} cancel={() => setAdding(false)} />}
 
@@ -3579,6 +4181,10 @@ function Milestones() {
           </div>
         );
       })}
+
+      {openItem && (
+        <AchievementModal item={openItem} close={() => setOpenItem(null)} onConfirm={unlock} />
+      )}
     </div>
   );
 }
@@ -3782,23 +4388,23 @@ function SetRow({ label, value }) {
 // ============================================================
 // BOTTOM NAV
 // ============================================================
-function BottomNav({ tab, setTab, openMore }) {
+function BottomNav({ tab, setTab }) {
   const { t } = useLang();
   const items = [
-    ["shift", "🔄", t("shift")],
-    ["protocols", "⚡", t("protocols")],
+    ["home", "🏠", t("home")],
+    ["guide", "📋", t("guide")],
     ["insights", "📊", t("insights")],
-    ["library", "📚", t("library")],
-    ["more", "☰", t("more")],
+    ["gallery", "🖼️", t("gallery")],
+    ["ask", "🤖", t("ask")],
   ];
   return (
-    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, maxWidth: 480, margin: "0 auto", background: C.surface, borderTop: `1px solid ${C.border}`, display: "flex", padding: "8px 6px 12px", zIndex: 150, backdropFilter: "blur(10px)" }}>
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, height: 72, maxWidth: 480, margin: "0 auto", background: C.surface, borderTop: `1px solid ${C.border}`, display: "flex", padding: "4px 4px", paddingBottom: "calc(4px + env(safe-area-inset-bottom, 0px))", zIndex: 200, backdropFilter: "blur(10px)", boxSizing: "content-box" }}>
       {items.map(([k, icon, label]) => {
         const active = tab === k;
         return (
-          <button key={k} onClick={() => k === "more" ? openMore() : setTab(k)} style={{ flex: 1, background: active ? C.accentDim : "transparent", border: "none", borderRadius: 12, padding: "8px 2px", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, cursor: "pointer" }}>
-            <span style={{ fontSize: 19, filter: active ? "none" : "grayscale(0.6) opacity(0.6)" }}>{icon}</span>
-            <span style={{ fontFamily: fonts.mono, fontSize: 8.5, letterSpacing: 0.5, textTransform: "uppercase", color: active ? C.accent : C.muted }}>{label}</span>
+          <button key={k} onClick={() => setTab(k)} style={{ flex: 1, minHeight: 72, background: active ? C.accentDim : "transparent", border: "none", borderRadius: 12, padding: "8px 2px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5, cursor: "pointer" }}>
+            <span style={{ fontSize: 26, filter: active ? "none" : "grayscale(0.6) opacity(0.6)" }}>{icon}</span>
+            <span style={{ fontFamily: fonts.mono, fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase", color: active ? C.accent : C.muted }}>{label}</span>
           </button>
         );
       })}
