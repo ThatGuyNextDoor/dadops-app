@@ -159,6 +159,14 @@ const STRINGS = {
     addCaption: "Add a caption (optional)", uploading: "Uploading…",
     noPhotosYet: "No photos yet — take one to start.",
     latestPhotos: "LATEST PHOTOS",
+    // Live status tap hints
+    tapToMarkAwake: "Tap card to mark awake →",
+    tapToMarkAsleep: "Tap card to mark asleep →",
+    // Formula Guide
+    formulaGuide: "Formula Guide", making: "Making",
+    water: "Water", scoops: "Scoops", powder: "Powder",
+    suggested: (t) => `Jacob has been awake ${t} — suggested: `,
+    formulaRatio: "50ml water = 1 scoop (7.5g)",
   },
   es: {
     // Nav
@@ -271,6 +279,14 @@ const STRINGS = {
     addCaption: "Añadir un pie de foto (opcional)", uploading: "Subiendo…",
     noPhotosYet: "Sin fotos aún — toma una para empezar.",
     latestPhotos: "ÚLTIMAS FOTOS",
+    // Live status tap hints
+    tapToMarkAwake: "Toca la tarjeta para marcar despierto →",
+    tapToMarkAsleep: "Toca la tarjeta para marcar dormido →",
+    // Formula Guide
+    formulaGuide: "Guía de Fórmula", making: "Preparando",
+    water: "Agua", scoops: "Medidas", powder: "Polvo",
+    suggested: (t) => `Jacob ha estado despierto ${t} — sugerido: `,
+    formulaRatio: "50ml de agua = 1 medida (7.5g)",
   },
 };
 
@@ -654,9 +670,9 @@ function MainApp({ currentPerson, people, liveStatus, setHolder, setActivity, ad
   return (
     <div style={{ background: C.bg, minHeight: "100vh", fontFamily: fonts.body, color: C.text, position: "relative", maxWidth: 480, margin: "0 auto", overflow: "hidden" }}>
       {handoverAlarm && <HandoverAlarmOverlay alarm={handoverAlarm} dismiss={dismissAlarm} />}
-      <TopBar user={user} people={people} switchPerson={switchPerson} />
+      <TopBar user={user} people={people} switchPerson={switchPerson} sleeps={sleeps} routineConfig={routineConfig} />
 
-      <div style={{ padding: "0 16px 120px", minHeight: "100vh" }}>
+      <div style={{ padding: "0 16px", paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px) + 20px)", minHeight: "100vh" }}>
         {tab === "shift" && <Shift {...shared} />}
         {tab === "protocols" && <Protocols {...shared} />}
         {tab === "insights" && <Insights {...shared} />}
@@ -1350,7 +1366,7 @@ function ThemeToggleButton({ size = 48 }) {
   );
 }
 
-function TopBar({ user, people, switchPerson }) {
+function TopBar({ user, people, switchPerson, sleeps, routineConfig }) {
   const { lang, t, setLang } = useLang();
   const [open, setOpen] = useState(false);
   const active = (people || []).filter((p) => p.active !== false);
@@ -1360,6 +1376,7 @@ function TopBar({ user, people, switchPerson }) {
         DAD<span style={{ color: C.accent }}>OPS</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <FormulaGuideButton sleeps={sleeps} routineConfig={routineConfig} />
         <ThemeToggleButton size={36} />
         <div style={{ display: "flex", borderRadius: 20, overflow: "hidden", border: `1px solid ${C.border}` }}>
           {["en", "es"].map((l) => (
@@ -1450,7 +1467,7 @@ function WhoInChargeCard({ liveStatus, people, setHolder, large }) {
 // ============================================================
 // TONIGHT
 // ============================================================
-function Shift({ shifts, shiftsT, lastFeed, lastNappy, user, feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT, tempsT, people, liveStatus, setHolder, setActivity, addFeed, routineConfig, holderLog }) {
+function Shift({ shifts, shiftsT, lastFeed, lastNappy, user, feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT, tempsT, people, liveStatus, setHolder, setActivity, addFeed, addSleep, routineConfig, holderLog }) {
   const { t } = useLang();
   const [manageOpen, setManageOpen] = useState(false);
   const nameOf = (n) => people.find((p) => p.name.toLowerCase() === (n || "").toLowerCase())?.name || n || "—";
@@ -1545,7 +1562,7 @@ function Shift({ shifts, shiftsT, lastFeed, lastNappy, user, feeds, nappies, sle
       )}
 
       <Label>{t("liveStatus")}</Label>
-      <LiveStatusCard sleeps={sleeps} sleepsT={sleepsT} lastFeed={lastFeed} lastNappy={lastNappy} people={people} liveStatus={liveStatus} setActivity={setActivity} addFeed={addFeed} />
+      <LiveStatusCard sleeps={sleeps} sleepsT={sleepsT} lastFeed={lastFeed} lastNappy={lastNappy} people={people} liveStatus={liveStatus} setActivity={setActivity} addFeed={addFeed} addSleep={addSleep} />
 
       <Label>{t("activityLog")}</Label>
       <ActivityLog
@@ -1664,7 +1681,7 @@ function ShiftForm({ initial, people, onSave, cancel }) {
   );
 }
 
-function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStatus, setActivity, addFeed }) {
+function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStatus, setActivity, addFeed, addSleep }) {
   const { t } = useLang();
   const [, setTick] = useState(0);
   const [showFinish, setShowFinish] = useState(false);
@@ -1686,10 +1703,21 @@ function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStat
     ? Math.floor((n - new Date(liveStatus.started_at)) / 60000)
     : null;
 
-  const wakeUp = async () => {
+  const wakeUp = async (e) => {
+    e.stopPropagation();
     if (!activeSleep) return;
     await sleepsT.update(activeSleep.id, { end_ts: new Date().toISOString() });
     setActivity("idle");
+  };
+
+  const toggleSleepStatus = async () => {
+    if (activeSleep) {
+      await sleepsT.update(activeSleep.id, { end_ts: new Date().toISOString() });
+      setActivity("idle");
+    } else {
+      addSleep({ start: new Date() });
+      setActivity("napping");
+    }
   };
 
   const feedLabel = (() => {
@@ -1733,7 +1761,7 @@ function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStat
       )}
 
       {/* Sleep / awake status */}
-      <div style={{ background: activeSleep ? "rgba(0,210,110,0.07)" : C.card, border: `1px solid ${activeSleep ? C.accentBorder : C.border}`, borderRadius: 16, padding: "18px 20px", marginBottom: 12 }}>
+      <div onClick={toggleSleepStatus} style={{ cursor: "pointer", background: activeSleep ? "rgba(0,210,110,0.07)" : C.card, border: `1px solid ${activeSleep ? C.accentBorder : C.border}`, borderRadius: 16, padding: "18px 20px", marginBottom: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ fontSize: 36, flexShrink: 0 }}>{activeSleep ? "😴" : "☀️"}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -1766,9 +1794,12 @@ function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStat
             </button>
           )}
         </div>
+        <div style={{ fontFamily: fonts.mono, fontSize: 10, color: C.muted2, textAlign: "right", marginTop: 10 }}>
+          {activeSleep ? t("tapToMarkAwake") : t("tapToMarkAsleep")}
+        </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 2 }}>
         <StatTile icon="🍼" label={t("lastFeed")} value={lastFeed ? agoStr(lastFeed.at) : "—"} sub={feedLabel} />
         <StatTile icon="👶" label={t("lastNappy")} value={lastNappy ? agoStr(lastNappy.at) : "—"}
           sub={lastNappy ? ([lastNappy.urineLevel ? `Wet · ${lastNappy.urineLevel}` : null, lastNappy.stool ? "Soiled" : null].filter(Boolean).join(" · ") || lastNappy.type) : t("noNappiesYet")} />
@@ -1779,11 +1810,108 @@ function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStat
 
 function StatTile({ icon, label, value, sub }) {
   return (
-    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 14 }}>
+    <div style={{ flex: "0 0 auto", minWidth: 165, maxWidth: 210, minHeight: 110, background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 14 }}>
       <div style={{ fontSize: 20, marginBottom: 8 }}>{icon}</div>
-      <div style={{ fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.5, color: C.muted, marginBottom: 3 }}>{label.toUpperCase()}</div>
+      <div style={{ fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.5, color: C.muted, marginBottom: 3, whiteSpace: "nowrap" }}>{label.toUpperCase()}</div>
       <div style={{ fontSize: 16, fontWeight: 600 }}>{value}</div>
-      <div style={{ fontSize: 11.5, color: C.muted2, marginTop: 2 }}>{sub}</div>
+      <div style={{ fontSize: 11.5, color: C.muted2, marginTop: 2, whiteSpace: "nowrap" }}>{sub}</div>
+    </div>
+  );
+}
+
+// ============================================================
+// FORMULA GUIDE — ml-first formula mixing helper
+// ============================================================
+function formatScoops(scoops) {
+  const rounded = Math.round(scoops * 4) / 4;
+  const whole = Math.floor(rounded);
+  const frac = Math.round((rounded - whole) * 4) / 4;
+  const fracGlyph = { 0: "", 0.25: "¼", 0.5: "½", 0.75: "¾" }[frac] || "";
+  if (whole === 0) return fracGlyph || "0";
+  return `${whole}${fracGlyph}`;
+}
+
+function suggestedFormulaMl(awakeMins, fallback) {
+  if (awakeMins == null) return fallback;
+  if (awakeMins < 180) return 60;
+  if (awakeMins < 240) return 65;
+  return 80;
+}
+
+function FormulaGuideButton({ sleeps, routineConfig }) {
+  const { lang } = useLang();
+  const [open, setOpen] = useState(false);
+  const activeSleep = (sleeps || []).find((s) => !s.end);
+  const lastSleep = (sleeps || []).find((s) => s.end);
+  const awakeMins = !activeSleep && lastSleep ? Math.floor((new Date() - lastSleep.end) / 60000) : null;
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: "0 14px", borderRadius: 18, border: `1px solid ${C.accentBorder}`, background: C.accentDim, color: C.text, cursor: "pointer", fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1 }}>
+        <span style={{ fontSize: 15 }}>🍶</span>{lang === "es" ? "FÓRMULA" : "FORMULA"}
+      </button>
+      {open && (
+        <FormulaGuideModal awakeMins={awakeMins} defaultMl={routineConfig?.feedTargetMl || 60} onClose={() => setOpen(false)} />
+      )}
+    </>
+  );
+}
+
+function FormulaGuideModal({ awakeMins, defaultMl, onClose }) {
+  const { t } = useLang();
+  const suggestion = suggestedFormulaMl(awakeMins, defaultMl || 60);
+  const [ml, setMl] = useState(suggestion);
+
+  const waterMl = ml * (50 / 57.5);
+  const scoops = waterMl / 50;
+  const grams = scoops * 7.5;
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 260, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, width: "100%", maxWidth: 400 }}>
+        <div style={{ fontFamily: fonts.mono, fontSize: 12, letterSpacing: 2, color: C.accent, marginBottom: 16, textAlign: "center" }}>
+          {t("formulaGuide").toUpperCase()}
+        </div>
+
+        {awakeMins != null && (
+          <div style={{ fontSize: 12, color: C.muted2, textAlign: "center", marginBottom: 10 }}>
+            {t("suggested", fmtDuration(awakeMins))}{suggestion}ml
+          </div>
+        )}
+
+        <div style={{ textAlign: "center", background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "18px 10px", marginBottom: 14 }}>
+          <div style={{ fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1.5, color: C.muted2 }}>{t("making").toUpperCase()}</div>
+          <div style={{ fontFamily: fonts.display, fontSize: 64, color: C.accent, lineHeight: 1 }}>{ml} ml</div>
+        </div>
+
+        <input type="range" min={30} max={180} step={5} value={ml} onChange={(e) => setMl(Number(e.target.value))}
+          style={{ width: "100%", accentColor: C.accent, marginBottom: 6 }} />
+        <div style={{ display: "flex", justifyContent: "space-between", fontFamily: fonts.mono, fontSize: 10, color: C.muted, marginBottom: 16 }}>
+          <span>30ml</span><span>180ml</span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 10, textAlign: "center" }}>
+            <div style={{ fontSize: 16 }}>💧</div>
+            <div style={{ fontFamily: fonts.mono, fontSize: 8.5, letterSpacing: 1, color: C.muted, margin: "4px 0 2px" }}>{t("water").toUpperCase()}</div>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>{Math.round(waterMl)} ml</div>
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 10, textAlign: "center" }}>
+            <div style={{ fontSize: 16 }}>🥄</div>
+            <div style={{ fontFamily: fonts.mono, fontSize: 8.5, letterSpacing: 1, color: C.muted, margin: "4px 0 2px" }}>{t("scoops").toUpperCase()}</div>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>{formatScoops(scoops)}</div>
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 10, textAlign: "center" }}>
+            <div style={{ fontSize: 16 }}>⚖️</div>
+            <div style={{ fontFamily: fonts.mono, fontSize: 8.5, letterSpacing: 1, color: C.muted, margin: "4px 0 2px" }}>{t("powder").toUpperCase()}</div>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>{grams.toFixed(1)}g</div>
+          </div>
+        </div>
+
+        <div style={{ fontSize: 11.5, color: C.muted2, textAlign: "center", marginBottom: 18 }}>{t("formulaRatio")}</div>
+
+        <button onClick={onClose} style={bigBtn()}>CLOSE</button>
+      </div>
     </div>
   );
 }
@@ -2615,7 +2743,7 @@ function QuickLogFab({ open, setOpen, addFeed, addNappy, addSleep, addTemp, live
     <>
       {toast && <div style={{ position: "fixed", bottom: 150, left: "50%", transform: "translateX(-50%)", background: C.accent, color: "#000", padding: "10px 18px", borderRadius: 30, fontWeight: 600, fontSize: 13.5, zIndex: 300, animation: "fadeUp 0.2s", boxShadow: "0 8px 30px rgba(0,210,110,0.4)" }}>✓ {toast}</div>}
 
-      <button onClick={() => setOpen(true)} style={{ position: "fixed", bottom: 86, right: 18, width: 58, height: 58, borderRadius: "50%", background: C.accent, border: "none", color: "#000", fontSize: 28, fontWeight: 300, cursor: "pointer", zIndex: 200, boxShadow: "0 8px 30px rgba(0,210,110,0.45)", maxWidth: 480, display: "grid", placeItems: "center" }}>
+      <button onClick={() => setOpen(true)} style={{ position: "fixed", bottom: "calc(86px + env(safe-area-inset-bottom, 0px))", right: 18, width: 58, height: 58, borderRadius: "50%", background: C.accent, border: "none", color: "#000", fontSize: 28, fontWeight: 300, cursor: "pointer", zIndex: 210, boxShadow: "0 8px 30px rgba(0,210,110,0.45)", maxWidth: 480, display: "grid", placeItems: "center" }}>
         +
       </button>
 
@@ -3792,7 +3920,7 @@ function BottomNav({ tab, setTab, openMore }) {
     ["more", "☰", t("more")],
   ];
   return (
-    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, maxWidth: 480, margin: "0 auto", background: C.surface, borderTop: `1px solid ${C.border}`, display: "flex", padding: "8px 6px 12px", zIndex: 150, backdropFilter: "blur(10px)" }}>
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, maxWidth: 480, margin: "0 auto", background: C.surface, borderTop: `1px solid ${C.border}`, display: "flex", padding: "8px 6px calc(12px + env(safe-area-inset-bottom, 0px))", zIndex: 200, backdropFilter: "blur(10px)" }}>
       {items.map(([k, icon, label]) => {
         const active = tab === k;
         return (
