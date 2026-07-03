@@ -174,31 +174,14 @@ const STRINGS = {
     addCaption: "Add a caption (optional)", uploading: "Uploading…",
     noPhotosYet: "No photos yet — take one to start.",
     latestPhotos: "LATEST PHOTOS",
-    // Live status hero / KPI row / formula guide (Step 2/4)
-    lastTemp: "Last Temp", kpiNextFeed: "Next Feed", kpiOverdue: "Overdue",
-    formulaGuide: "Formula Guide", tapForGuide: "Tap for guide",
-    confirmWakeTitle: "He's awake!", confirmWakeBody: "Log that Jacob just woke up?",
-    confirmSleepTitle: "He fell asleep", confirmSleepBody: "Log that Jacob just fell asleep?",
-    confirmYes: "Yes, confirm", tapToUpdate: "Tap to update",
-    downSince: (tm) => `Down since ${tm} · settled easily`, upSince: (tm) => `Up since ${tm} · calm and alert`,
-    tapMarkAwake: "Tap card to mark awake →", tapMarkAsleep: "Tap card to mark asleep →",
-    onShift: (d) => `On shift · ${d}`, handOffLabel: "HAND OFF",
-    earlierEntries: (n) => `+ ${n} earlier ${n === 1 ? "entry" : "entries"}`, showLess: "Show less",
-    awakeSince: (d) => `Jacob has been awake ${d}`, recommendedAmount: (ml) => `recommended: ${ml}`,
-    waterLabel: "Water", powderLabel: "Powder", scoopUnit: (n) => (n === 1 ? "scoop" : "scoops"),
-    saveAsTarget: "Save as target", targetSaved: "Target saved",
-    // Feed timer / nappy photo (Step 3)
-    startedAt: "Started at", addBottleTopUp: "Add bottle top-up", addPhotoOptional: "📷 Add photo",
-    uploadingPhoto: "Uploading photo…",
-    // Contextual protocol advice cards (Step 5)
-    adviceLongNap: (mins) => `Long nap — if he's been down over ${mins} minutes, it's fine to gently rouse him to keep the day rhythm on track. Or let him sleep — trust your read.`,
-    adviceJustWoke: (mins) => `He's awake — awake window is usually ${mins} min for this age. Watch for tired cues: eye rubbing, yawning, glazed look, losing interest in surroundings.`,
-    adviceFeedWindow: (hrs, ml) => `Feed window — it's been ${hrs} hours since the last feed. Recommended ${ml} if he's showing hunger cues.`,
-    adviceTemp: "Temperature flag — 38°C or above in a baby under 3 months always warrants a call to your provider or Pregnancy, Birth & Baby 1800 882 436, day or night.",
-    // Milestones achievement system (Step 7)
-    milestonesRecommended: "MILESTONES", milestonesYourMilestones: "YOUR MILESTONES", milestonesAddOwn: "+ Add your own",
-    milestoneWhenHappened: "When did this happen?", milestoneTellUs: "Tell us about it (optional)",
-    milestoneConfirm: "Confirm", milestoneLocked: "Not yet", milestoneAchieved: "Achieved",
+    // Live status tap hints
+    tapToMarkAwake: "Tap card to mark awake →",
+    tapToMarkAsleep: "Tap card to mark asleep →",
+    // Formula Guide
+    formulaGuide: "Formula Guide", making: "Making",
+    water: "Water", scoops: "Scoops", powder: "Powder",
+    suggested: (t) => `Jacob has been awake ${t} — suggested: `,
+    formulaRatio: "50ml water = 1 scoop (7.5g)",
   },
   es: {
     // Nav
@@ -318,31 +301,14 @@ const STRINGS = {
     addCaption: "Añadir un pie de foto (opcional)", uploading: "Subiendo…",
     noPhotosYet: "Sin fotos aún — toma una para empezar.",
     latestPhotos: "ÚLTIMAS FOTOS",
-    // Live status hero / KPI row / formula guide (Step 2/4)
-    lastTemp: "Última Temperatura", kpiNextFeed: "Próxima Toma", kpiOverdue: "Atrasada",
-    formulaGuide: "Guía de Fórmula", tapForGuide: "Toca para la guía",
-    confirmWakeTitle: "¡Está despierto!", confirmWakeBody: "¿Registrar que Jacob se acaba de despertar?",
-    confirmSleepTitle: "Se durmió", confirmSleepBody: "¿Registrar que Jacob se acaba de dormir?",
-    confirmYes: "Sí, confirmar", tapToUpdate: "Toca para actualizar",
-    downSince: (tm) => `Dormido desde las ${tm} · se calmó fácilmente`, upSince: (tm) => `Despierto desde las ${tm} · tranquilo y alerta`,
-    tapMarkAwake: "Toca la tarjeta para marcar despierto →", tapMarkAsleep: "Toca la tarjeta para marcar dormido →",
-    onShift: (d) => `A cargo · ${d}`, handOffLabel: "ENTREGAR",
-    earlierEntries: (n) => `+ ${n} ${n === 1 ? "entrada anterior" : "entradas anteriores"}`, showLess: "Mostrar menos",
-    awakeSince: (d) => `Jacob lleva despierto ${d}`, recommendedAmount: (ml) => `recomendado: ${ml}`,
-    waterLabel: "Agua", powderLabel: "Fórmula en polvo", scoopUnit: (n) => (n === 1 ? "cucharada" : "cucharadas"),
-    saveAsTarget: "Guardar como objetivo", targetSaved: "Objetivo guardado",
-    // Feed timer / nappy photo (Step 3)
-    startedAt: "Comenzó a las", addBottleTopUp: "Añadir complemento de biberón", addPhotoOptional: "📷 Añadir foto",
-    uploadingPhoto: "Subiendo foto…",
-    // Contextual protocol advice cards (Step 5)
-    adviceLongNap: (mins) => `Siesta larga — si lleva más de ${mins} minutos dormido, está bien despertarlo con suavidad para mantener el ritmo del día. O déjalo dormir — confía en tu criterio.`,
-    adviceJustWoke: (mins) => `Está despierto — la ventana de vigilia suele ser de ${mins} min a esta edad. Vigila señales de sueño: se frota los ojos, bosteza, mirada perdida, pierde interés en su entorno.`,
-    adviceFeedWindow: (hrs, ml) => `Ventana de toma — han pasado ${hrs} horas desde la última toma. Se recomienda ${ml} si muestra señales de hambre.`,
-    adviceTemp: "Alerta de temperatura — 38°C o más en un bebé menor de 3 meses siempre requiere llamar a tu médico o a Pregnancy, Birth & Baby 1800 882 436, de día o de noche.",
-    // Milestones achievement system (Step 7)
-    milestonesRecommended: "HITOS", milestonesYourMilestones: "TUS HITOS", milestonesAddOwn: "+ Añade el tuyo",
-    milestoneWhenHappened: "¿Cuándo ocurrió esto?", milestoneTellUs: "Cuéntanos sobre esto (opcional)",
-    milestoneConfirm: "Confirmar", milestoneLocked: "Aún no", milestoneAchieved: "Logrado",
+    // Live status tap hints
+    tapToMarkAwake: "Toca la tarjeta para marcar despierto →",
+    tapToMarkAsleep: "Toca la tarjeta para marcar dormido →",
+    // Formula Guide
+    formulaGuide: "Guía de Fórmula", making: "Preparando",
+    water: "Agua", scoops: "Medidas", powder: "Polvo",
+    suggested: (t) => `Jacob ha estado despierto ${t} — sugerido: `,
+    formulaRatio: "50ml de agua = 1 medida (7.5g)",
   },
 };
 
@@ -745,15 +711,13 @@ function MainApp({ currentPerson, people, liveStatus, setHolder, setActivity, ad
   return (
     <div style={{ background: C.bg, minHeight: "100vh", fontFamily: fonts.body, color: C.text, position: "relative", maxWidth: 480, margin: "0 auto", overflow: "hidden" }}>
       {handoverAlarm && <HandoverAlarmOverlay alarm={handoverAlarm} dismiss={dismissAlarm} />}
-      <TopBar user={user} people={people} switchPerson={switchPerson} onOpenSettings={() => setMoreOpen(true)} openQuickLog={openQuickLog} />
+      <TopBar user={user} people={people} switchPerson={switchPerson} sleeps={sleeps} routineConfig={routineConfig} />
 
-      <div style={{ padding: "0 16px 160px", minHeight: "100vh" }}>
-        {tab === "home" && <Shift {...shared} />}
-        {tab === "activitylog" && (
-          <ActivityLog feeds={feeds} nappies={nappies} sleeps={sleeps} temps={temps} feedsT={feedsT} nappiesT={nappiesT} sleepsT={sleepsT} tempsT={tempsT} people={people} />
-        )}
-        {tab === "gallery" && <Gallery photos={photos || []} uploadPhoto={uploadPhoto} deletePhoto={deletePhoto} getUrl={getUrl} currentUser={user?.name} />}
-        {tab === "growth" && <GrowthTab metrics={metrics} addMetric={addMetric} deleteMetric={deleteMetric} />}
+      <div style={{ padding: "0 16px", paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px) + 20px)", minHeight: "100vh" }}>
+        {tab === "shift" && <Shift {...shared} />}
+        {tab === "protocols" && <Protocols {...shared} />}
+        {tab === "insights" && <Insights {...shared} />}
+        {tab === "library" && <Library {...shared} />}
       </div>
 
       {tab === "home" && <ReassuranceToast />}
@@ -1378,8 +1342,8 @@ function ThemeToggleButton({ size = 48 }) {
   );
 }
 
-function TopBar({ user, people, switchPerson, onOpenSettings, openQuickLog }) {
-  const { t } = useLang();
+function TopBar({ user, people, switchPerson, sleeps, routineConfig }) {
+  const { lang, t, setLang } = useLang();
   const [open, setOpen] = useState(false);
   const active = (people || []).filter((p) => p.active !== false);
   const quickBtnStyle = { display: "flex", alignItems: "center", gap: 7, height: 36, padding: "0 14px", borderRadius: 18, border: `1px solid ${C.accentBorder}`, background: C.accentDim, color: C.text, cursor: "pointer", fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1 };
@@ -1390,12 +1354,15 @@ function TopBar({ user, people, switchPerson, onOpenSettings, openQuickLog }) {
         <span style={{ fontFamily: fonts.mono, fontSize: 11, color: C.muted2, letterSpacing: 1 }}>JACOB · {daysOld()} DAYS</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <button onClick={() => openQuickLog("feed")} style={quickBtnStyle}>
-          <span style={{ fontSize: 15 }}>🍼</span>{t("feed").toUpperCase()}
-        </button>
-        <button onClick={() => openQuickLog("nappy")} style={quickBtnStyle}>
-          <span style={{ fontSize: 15 }}>👶</span>{t("nappy").toUpperCase()}
-        </button>
+        <FormulaGuideButton sleeps={sleeps} routineConfig={routineConfig} />
+        <ThemeToggleButton size={36} />
+        <div style={{ display: "flex", borderRadius: 20, overflow: "hidden", border: `1px solid ${C.border}` }}>
+          {["en", "es"].map((l) => (
+            <button key={l} onClick={() => setLang(l)} style={{ padding: "5px 12px", background: lang === l ? C.accentDim : "transparent", border: "none", color: lang === l ? C.accent : C.muted, fontFamily: fonts.mono, fontSize: 11, fontWeight: 700, letterSpacing: 1, cursor: "pointer" }}>
+              {l.toUpperCase()}
+            </button>
+          ))}
+        </div>
         <div style={{ position: "relative" }}>
           <button onClick={() => setOpen(!open)} style={{ display: "flex", alignItems: "center", gap: 8, background: C.card, border: `1px solid ${C.border}`, borderRadius: 20, padding: "5px 12px 5px 6px", cursor: "pointer" }}>
             <div style={{ width: 26, height: 26, borderRadius: "50%", background: user.color || C.accent, display: "grid", placeItems: "center", color: "#0a1a14", fontWeight: 700, fontSize: 12 }}>
@@ -1703,7 +1670,7 @@ function ProtocolAdviceCard({ liveStatus, routineConfig, sleeps, lastFeed, lastT
 // ============================================================
 // TONIGHT
 // ============================================================
-function Shift({ shifts, shiftsT, lastFeed, lastNappy, feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT, tempsT, people, liveStatus, setHolder, setActivity, addFeed, routineConfig, saveRoutineConfig, holderLog, openQuickLog }) {
+function Shift({ shifts, shiftsT, lastFeed, lastNappy, user, feeds, nappies, sleeps, temps, feedsT, nappiesT, sleepsT, tempsT, people, liveStatus, setHolder, setActivity, addFeed, addSleep, routineConfig, holderLog }) {
   const { t } = useLang();
   const [manageOpen, setManageOpen] = useState(false);
   const [formulaOpen, setFormulaOpen] = useState(false);
@@ -1809,6 +1776,15 @@ function Shift({ shifts, shiftsT, lastFeed, lastNappy, feeds, nappies, sleeps, t
           <HolderAttributionBar rows={holderLog} people={people} clock={new Date()} />
         </>
       )}
+
+      <Label>{t("liveStatus")}</Label>
+      <LiveStatusCard sleeps={sleeps} sleepsT={sleepsT} lastFeed={lastFeed} lastNappy={lastNappy} people={people} liveStatus={liveStatus} setActivity={setActivity} addFeed={addFeed} addSleep={addSleep} />
+
+      <Label>{t("activityLog")}</Label>
+      <ActivityLog
+        feeds={feeds} nappies={nappies} sleeps={sleeps} temps={temps}
+        feedsT={feedsT} nappiesT={nappiesT} sleepsT={sleepsT} tempsT={tempsT} people={people}
+      />
 
       {manageOpen && <ShiftManager shiftsT={shiftsT} people={people} close={() => setManageOpen(false)} />}
     </div>
@@ -1921,7 +1897,7 @@ function ShiftForm({ initial, people, onSave, cancel }) {
   );
 }
 
-function LiveStatusCard({ liveStatus, setActivity, addFeed }) {
+function LiveStatusCard({ sleeps, sleepsT, lastFeed, lastNappy, people, liveStatus, setActivity, addFeed, addSleep }) {
   const { t } = useLang();
   const [, setTick] = useState(0);
   const [showFinish, setShowFinish] = useState(false);
@@ -1936,7 +1912,29 @@ function LiveStatusCard({ liveStatus, setActivity, addFeed }) {
     ? Math.floor((n - new Date(liveStatus.started_at)) / 60000)
     : null;
 
-  if (!isFeeding) return null;
+  const wakeUp = async (e) => {
+    e.stopPropagation();
+    if (!activeSleep) return;
+    await sleepsT.update(activeSleep.id, { end_ts: new Date().toISOString() });
+    setActivity("idle");
+  };
+
+  const toggleSleepStatus = async () => {
+    if (activeSleep) {
+      await sleepsT.update(activeSleep.id, { end_ts: new Date().toISOString() });
+      setActivity("idle");
+    } else {
+      addSleep({ start: new Date() });
+      setActivity("napping");
+    }
+  };
+
+  const feedLabel = (() => {
+    if (!lastFeed) return t("noFeedsYet");
+    if (lastFeed.type === "combo") return `Breast+Bottle · ${lastFeed.breastDurationMins || "?"}min · ${lastFeed.bottleVolMl || lastFeed.vol || "?"}ml`;
+    if (lastFeed.type === "breast") return `Breast (${lastFeed.side || "—"})${lastFeed.breastDurationMins ? ` · ${lastFeed.breastDurationMins}min` : ""}`;
+    return `Bottle ${lastFeed.bottleVolMl || lastFeed.vol || "?"}ml`;
+  })();
 
   return (
     <>
@@ -1970,7 +1968,160 @@ function LiveStatusCard({ liveStatus, setActivity, addFeed }) {
           <FeedLog liveStatus={liveStatus} setActivity={setActivity} onSave={(f) => { addFeed(f); setActivity("idle"); setShowFinish(false); }} back={() => setShowFinish(false)} />
         </div>
       )}
+
+      {/* Sleep / awake status */}
+      <div onClick={toggleSleepStatus} style={{ cursor: "pointer", background: activeSleep ? "rgba(0,210,110,0.07)" : C.card, border: `1px solid ${activeSleep ? C.accentBorder : C.border}`, borderRadius: 16, padding: "18px 20px", marginBottom: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div style={{ fontSize: 36, flexShrink: 0 }}>{activeSleep ? "😴" : "☀️"}</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: fonts.mono, fontSize: 10, letterSpacing: 2, color: activeSleep ? C.accent : C.muted2, marginBottom: 4 }}>
+              {activeSleep ? t("jacobSleeping") : t("jacobAwake")}
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 700, lineHeight: 1.1 }}>
+              {activeSleep
+                ? fmtDuration(sleepMins)
+                : awakeMins !== null ? t("awakenFor", fmtDuration(awakeMins)) : "—"}
+            </div>
+            {activeSleep && sleepPerson && (
+              <div style={{ fontSize: 12, color: C.muted2, marginTop: 4 }}>
+                <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: sleepPerson.color, marginRight: 5, verticalAlign: "middle" }} />
+                {t("putDownBy", sleepPerson.name)}
+              </div>
+            )}
+            {!activeSleep && lastSleep && (
+              <div style={{ fontSize: 12, color: C.muted2, marginTop: 4 }}>
+                {t("sleptFor", fmtDuration(lastSleepMins))} · {t("wokeAgo", agoStr(lastSleep.end))}
+              </div>
+            )}
+            {!activeSleep && !lastSleep && (
+              <div style={{ fontSize: 12, color: C.muted2, marginTop: 4 }}>{t("noSleepsYet")}</div>
+            )}
+          </div>
+          {activeSleep && (
+            <button onClick={wakeUp} style={{ background: C.accent, color: "#000", border: "none", borderRadius: 12, padding: "10px 14px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: fonts.mono, letterSpacing: 0.5, whiteSpace: "nowrap", flexShrink: 0 }}>
+              {t("heWokeUp")}
+            </button>
+          )}
+        </div>
+        <div style={{ fontFamily: fonts.mono, fontSize: 10, color: C.muted2, textAlign: "right", marginTop: 10 }}>
+          {activeSleep ? t("tapToMarkAwake") : t("tapToMarkAsleep")}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 2 }}>
+        <StatTile icon="🍼" label={t("lastFeed")} value={lastFeed ? agoStr(lastFeed.at) : "—"} sub={feedLabel} />
+        <StatTile icon="👶" label={t("lastNappy")} value={lastNappy ? agoStr(lastNappy.at) : "—"}
+          sub={lastNappy ? ([lastNappy.urineLevel ? `Wet · ${lastNappy.urineLevel}` : null, lastNappy.stool ? "Soiled" : null].filter(Boolean).join(" · ") || lastNappy.type) : t("noNappiesYet")} />
+      </div>
     </>
+  );
+}
+
+function StatTile({ icon, label, value, sub }) {
+  return (
+    <div style={{ flex: "0 0 auto", minWidth: 165, maxWidth: 210, minHeight: 110, background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 14 }}>
+      <div style={{ fontSize: 20, marginBottom: 8 }}>{icon}</div>
+      <div style={{ fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.5, color: C.muted, marginBottom: 3, whiteSpace: "nowrap" }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize: 16, fontWeight: 600 }}>{value}</div>
+      <div style={{ fontSize: 11.5, color: C.muted2, marginTop: 2, whiteSpace: "nowrap" }}>{sub}</div>
+    </div>
+  );
+}
+
+// ============================================================
+// FORMULA GUIDE — ml-first formula mixing helper
+// ============================================================
+function formatScoops(scoops) {
+  const rounded = Math.round(scoops * 4) / 4;
+  const whole = Math.floor(rounded);
+  const frac = Math.round((rounded - whole) * 4) / 4;
+  const fracGlyph = { 0: "", 0.25: "¼", 0.5: "½", 0.75: "¾" }[frac] || "";
+  if (whole === 0) return fracGlyph || "0";
+  return `${whole}${fracGlyph}`;
+}
+
+function suggestedFormulaMl(awakeMins, fallback) {
+  if (awakeMins == null) return fallback;
+  if (awakeMins < 180) return 60;
+  if (awakeMins < 240) return 65;
+  return 80;
+}
+
+function FormulaGuideButton({ sleeps, routineConfig }) {
+  const { lang } = useLang();
+  const [open, setOpen] = useState(false);
+  const activeSleep = (sleeps || []).find((s) => !s.end);
+  const lastSleep = (sleeps || []).find((s) => s.end);
+  const awakeMins = !activeSleep && lastSleep ? Math.floor((new Date() - lastSleep.end) / 60000) : null;
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: "0 14px", borderRadius: 18, border: `1px solid ${C.accentBorder}`, background: C.accentDim, color: C.text, cursor: "pointer", fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1 }}>
+        <span style={{ fontSize: 15 }}>🍶</span>{lang === "es" ? "FÓRMULA" : "FORMULA"}
+      </button>
+      {open && (
+        <FormulaGuideModal awakeMins={awakeMins} defaultMl={routineConfig?.feedTargetMl || 60} onClose={() => setOpen(false)} />
+      )}
+    </>
+  );
+}
+
+function FormulaGuideModal({ awakeMins, defaultMl, onClose }) {
+  const { t } = useLang();
+  const suggestion = suggestedFormulaMl(awakeMins, defaultMl || 60);
+  const [ml, setMl] = useState(suggestion);
+
+  const waterMl = ml * (50 / 57.5);
+  const scoops = waterMl / 50;
+  const grams = scoops * 7.5;
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 260, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24, width: "100%", maxWidth: 400 }}>
+        <div style={{ fontFamily: fonts.mono, fontSize: 12, letterSpacing: 2, color: C.accent, marginBottom: 16, textAlign: "center" }}>
+          {t("formulaGuide").toUpperCase()}
+        </div>
+
+        {awakeMins != null && (
+          <div style={{ fontSize: 12, color: C.muted2, textAlign: "center", marginBottom: 10 }}>
+            {t("suggested", fmtDuration(awakeMins))}{suggestion}ml
+          </div>
+        )}
+
+        <div style={{ textAlign: "center", background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "18px 10px", marginBottom: 14 }}>
+          <div style={{ fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1.5, color: C.muted2 }}>{t("making").toUpperCase()}</div>
+          <div style={{ fontFamily: fonts.display, fontSize: 64, color: C.accent, lineHeight: 1 }}>{ml} ml</div>
+        </div>
+
+        <input type="range" min={30} max={180} step={5} value={ml} onChange={(e) => setMl(Number(e.target.value))}
+          style={{ width: "100%", accentColor: C.accent, marginBottom: 6 }} />
+        <div style={{ display: "flex", justifyContent: "space-between", fontFamily: fonts.mono, fontSize: 10, color: C.muted, marginBottom: 16 }}>
+          <span>30ml</span><span>180ml</span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 10, textAlign: "center" }}>
+            <div style={{ fontSize: 16 }}>💧</div>
+            <div style={{ fontFamily: fonts.mono, fontSize: 8.5, letterSpacing: 1, color: C.muted, margin: "4px 0 2px" }}>{t("water").toUpperCase()}</div>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>{Math.round(waterMl)} ml</div>
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 10, textAlign: "center" }}>
+            <div style={{ fontSize: 16 }}>🥄</div>
+            <div style={{ fontFamily: fonts.mono, fontSize: 8.5, letterSpacing: 1, color: C.muted, margin: "4px 0 2px" }}>{t("scoops").toUpperCase()}</div>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>{formatScoops(scoops)}</div>
+          </div>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 10, textAlign: "center" }}>
+            <div style={{ fontSize: 16 }}>⚖️</div>
+            <div style={{ fontFamily: fonts.mono, fontSize: 8.5, letterSpacing: 1, color: C.muted, margin: "4px 0 2px" }}>{t("powder").toUpperCase()}</div>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>{grams.toFixed(1)}g</div>
+          </div>
+        </div>
+
+        <div style={{ fontSize: 11.5, color: C.muted2, textAlign: "center", marginBottom: 18 }}>{t("formulaRatio")}</div>
+
+        <button onClick={onClose} style={bigBtn()}>CLOSE</button>
+      </div>
+    </div>
   );
 }
 
@@ -2848,7 +2999,7 @@ function QuickLogFab({ open, setOpen, view, setView, addFeed, addNappy, addSleep
     <>
       {toast && <div style={{ position: "fixed", bottom: 150, left: "50%", transform: "translateX(-50%)", background: C.accent, color: "#000", padding: "10px 18px", borderRadius: 30, fontWeight: 600, fontSize: 13.5, zIndex: 300, animation: "fadeUp 0.2s", boxShadow: "0 8px 30px rgba(0,210,110,0.4)" }}>✓ {toast}</div>}
 
-      <button onClick={() => setOpen(true)} style={{ position: "fixed", bottom: 86, right: 18, width: 58, height: 58, borderRadius: "50%", background: C.accent, border: "none", color: "#000", fontSize: 28, fontWeight: 300, cursor: "pointer", zIndex: 200, boxShadow: "0 8px 30px rgba(0,210,110,0.45)", maxWidth: 480, display: "grid", placeItems: "center" }}>
+      <button onClick={() => setOpen(true)} style={{ position: "fixed", bottom: "calc(86px + env(safe-area-inset-bottom, 0px))", right: 18, width: 58, height: 58, borderRadius: "50%", background: C.accent, border: "none", color: "#000", fontSize: 28, fontWeight: 300, cursor: "pointer", zIndex: 210, boxShadow: "0 8px 30px rgba(0,210,110,0.45)", maxWidth: 480, display: "grid", placeItems: "center" }}>
         +
       </button>
 
@@ -4375,7 +4526,7 @@ function BottomNav({ tab, setTab, onMore }) {
     ["more", "⋯", t("more")],
   ];
   return (
-    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, maxWidth: 480, margin: "0 auto", height: 72, background: C.bg, borderTop: `1px solid ${C.border}`, display: "flex", alignItems: "stretch", zIndex: 150, backdropFilter: "blur(10px)" }}>
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, maxWidth: 480, margin: "0 auto", background: C.surface, borderTop: `1px solid ${C.border}`, display: "flex", padding: "8px 6px calc(12px + env(safe-area-inset-bottom, 0px))", zIndex: 200, backdropFilter: "blur(10px)" }}>
       {items.map(([k, icon, label]) => {
         const active = tab === k;
         return (
