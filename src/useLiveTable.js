@@ -58,16 +58,19 @@ export function useLiveTable(table, { mapRow, orderBy = "created_at", ascending 
     async (row) => {
       if (!supabase) {
         // No Supabase configured — fall back to local-only so the UI still works in dev.
-        setRows((prev) => [{ id: `local-${Date.now()}`, ...row }, ...prev]);
-        return;
+        const local = { id: `local-${Date.now()}`, ...row };
+        setRows((prev) => [local, ...prev]);
+        return local;
       }
       const { data, error: err } = await supabase.from(table).insert(row).select().single();
       if (err) {
         setError(err);
-        return;
+        return null;
       }
       // Realtime subscription above will also deliver this; de-dupe by id if it beats us to it.
-      setRows((prev) => (prev.some((r) => r.id === data.id) ? prev : [transform(data), ...prev]));
+      const mapped = transform(data);
+      setRows((prev) => (prev.some((r) => r.id === data.id) ? prev : [mapped, ...prev]));
+      return mapped;
     },
     [table, transform]
   );
